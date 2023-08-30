@@ -1,4 +1,5 @@
 from constants import a
+import numpy as np
 
 class Value:
     def __init__(self,func,N_points):
@@ -18,10 +19,11 @@ def test_corr(x,y,model):
     return 2*x*y*np.exp(a)
 
 def Pot(x,model):
-    return model.m * (model.w) ** 2 * x ** 2 / 2
+    return model.V(x)
 
 def Kin(x,y,model):
     return 0.5 * (1/a ** 2) * (a*model.hbar-model.m*(x-y)**2) 
+
 POT=Value(Pot,1)
 X_POW_2=Value(x_pow_2,1)
 DELTA_X_POW_2=Value(delta_x_pow_2,2)

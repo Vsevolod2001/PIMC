@@ -1,11 +1,10 @@
 import numpy as np
 from constants import N_nod,a,d,n_att,D
 from Model import model
-from Model import basic_model
 import Value
 class trajectory:
 
-    def __init__(self,x,model=basic_model):
+    def __init__(self,x,model):
         self.x=x
         self.model=model
     
@@ -50,7 +49,7 @@ class trajectory:
                 Mean+=value.func( self.x[i%N_nod] , self.x[(i+1)%N_nod], self.model )
         return Mean/N_nod
     
-    def randgen(method="cold",model=basic_model):
+    def randgen(model,method):
         
         if method=="warm":
             points=(2*D)*np.random.rand(N_nod)-D
@@ -58,4 +57,13 @@ class trajectory:
         if method=="cold":
             points=N_nod*[0]
         
-        return trajectory(points,model) 
+        return trajectory(points,model)
+    
+    def P(self,p,n_bins,x_left,x_right):
+        h=(x_right-x_left)/n_bins
+        for i in range(N_nod):
+            k=int((self.x[i]-x_left)/h)
+            if k<n_bins:
+                p[k]+=1
+        return 0 
+        
