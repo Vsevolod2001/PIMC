@@ -25,7 +25,7 @@ class oscillator : public model{
         
             double L = sqrt(hbar/(mass*omega));
             double z = x/L; 
-            return exp(-x*x/2)/(L*sqrt(M_PI));
+            return exp(-z*z/2)/(L*sqrt(M_PI));
             
         }
 
