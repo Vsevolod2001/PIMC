@@ -18,7 +18,7 @@ Launch command:
 
 1-1-model-oscillator.h 
 &
-1-2-model-morse.h      #contain the exact models derived classes with overloading potential energy and an additional psi2-function
+1-2-model-morse.h      #contain the exact model derived classes with overloading potential energy and an additional psi2-function
 
 3. Structure of files:
 
