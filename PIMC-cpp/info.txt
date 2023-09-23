@@ -1,0 +1,26 @@
+1. Commands:
+
+1.1. If the gsl lib is included, the mpi design in not used.
+
+Complile command:
+
+c++ $(gsl-config --cflags) file-name.cpp $(gsl-config --libs) -o program-name
+
+Launch command:
+
+./program-name
+
+2. List of files:
+
+0-0-constants.h        #contains numeric parameters
+
+1-0-model.h            #contains the model base class
+
+1-1-model-oscillator.h 
+&
+1-2-model-morse.h      #contain the exact models derived classes with overloading potential energy and an additional psi2-function
+
+3. Structure of files:
+
+0-0 -> 1-0 -> 1-1
+           -> 1-2
