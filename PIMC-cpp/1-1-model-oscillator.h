@@ -14,9 +14,9 @@ class oscillator : public model{
         }
 
         //Potential Energy//
-        double V(double current_point){
+        double V(double x0){
 
-            double u = omega*current_point;
+            double u = omega*x0;
             return mass*u*u/2;
         }
 

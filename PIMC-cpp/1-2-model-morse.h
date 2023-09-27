@@ -16,9 +16,9 @@ class morse : public model{
         }
 
         //Potential Energy//
-        double V(double current_point){
+        double V(double x0){
 
-            double z = exp(-q*current_point);
+            double z = exp(-q*x0);
             return 0.5*g*g*((z-1)*(z-1) - 1);
         }
 
