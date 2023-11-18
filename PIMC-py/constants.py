@@ -1,11 +1,11 @@
-N_nod=500
-N_traj=500
+N_nod=10000
+N_traj=30000
 a=20/N_nod
 d=2*(a)**0.5
-D=1
+D=2
 n_att=10
-meash=1
-step=500
+meash=5
+step=100
 sweeps=meash*step
 
 Exp=4
@@ -19,5 +19,7 @@ X_Left=-6
 X_Right=6
 H=(X_Right-X_Left)/Bins
 
-G=1
-Q=1
+g0=1
+q0=1
+
+NG_points=N_nod//10

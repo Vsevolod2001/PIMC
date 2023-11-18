@@ -3,33 +3,44 @@ from constants import N_nod, N_traj, Bins, X_Left, X_Right
 import numpy as np
 
 class ensemble:
+   
     def __init__(self,trajs,n_traj=N_traj):
         self.n_traj=n_traj
         self.trajs=trajs
-        
-    def randgen(model,method="cold",n_traj=N_traj):
-        trajs=[0]*n_traj
-        for i in range(n_traj):
-            trajs[i]=trajectory.trajectory.randgen(model,method)
-        return ensemble(trajs,n_traj)
     
+    def randgen(model,method,n_traj=N_traj):
+        trajs=np.zeros((n_traj),dtype=object)
+        trajs=trajectory.trajectory.Vrandgen(model,method,trajs)
+        return ensemble(trajs,n_traj)
+        
     
     def average_and_sigma(self,value):
-        Mean=0
-        disp=0
-        x=0
-        for i in range(self.n_traj):
-            x=(self.trajs[i]).average(value)
-            Mean+=x
-            disp+=x**2
-        Mean=Mean/self.n_traj
-        disp=(disp/self.n_traj) - Mean**2
-        return np.array([Mean,disp**0.5])
+        x=trajectory.trajectory.Vaverage(self.trajs,value)
+        mean=np.mean(x)
+        std=np.std(x)
+        return np.array([mean,std*(self.n_traj)**-0.5])
+    
+    Vaverage_and_sigma=np.frompyfunc(average_and_sigma,2,1)
+   
     
     def markov(self):
-        for i in range(self.n_traj):
-            (self.trajs[i]).markov()
+        trajectory.trajectory.Vmarkov(self.trajs)
         return 0    
+    
+    def convert_to_array(self):
+        return np.vstack(trajectory.trajectory.Vconv(self.trajs))
+    
+    def save(self,filename):
+        np.savetxt(filename,self.convert_to_array(),delimiter=',')
+        return 0
+    
+    def load(filename,model):
+        X=np.loadtxt(filename,delimiter=',')
+        n_traj=X.shape[0]
+        trajs=np.zeros((n_traj),dtype=object)
+        for i in range(n_traj):
+            trajs[i]=trajectory.trajectory(X[i],model)
+        return ensemble(trajs,n_traj)    
     
     def P(self,p,n_bins=Bins,x_left=X_Left,x_right=X_Right):
         for i in range(self.n_traj):
