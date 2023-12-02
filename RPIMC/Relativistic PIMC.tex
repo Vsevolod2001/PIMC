@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\title{Relativistic Path Integral Monte-Carlo}
+\date{December 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Density matrix and energy}
+	Hamiltonian
+	\begin{equation}
+		H = \sqrt{p ^ 2 + m ^ 2} + V(q).
+		\label{Main Hamiltonian}
+	\end{equation}
+	Density matrix at small $\tau$
+	\begin{equation}
+		\rho (q '', q'; \tau) = \langle q '' | e ^ {- \tau H} | q ' \rangle.
+	\end{equation}
+	Density matrix in coordinate representation
+	\begin{align}
+		\nonumber
+		\rho (q '', q'; \tau) =& \Biggl ( \frac{m \tau}{\pi \sqrt{\tau ^ 2 + (q '' - q ') ^ 2}} \Biggr ) ^ {(d + 1) / 2} \cdot \\
+    	\cdot& \frac{K _ {(d + 1) / 2} (m \sqrt{\tau ^ 2 + (q '' - q ') ^ 2})}{(2 \tau) ^ {(d - 1) / 2}} e ^ {- \tau V (q ')},
+    	\label{Density Matrix General}
+	\end{align}
+	where $d = 1, 2, 3$.
+
+	Markov chain limit probability density for $d = 1$
+	\begin{equation}
+ 		\pi (q _ i) = \frac{K _ 1 \Bigl [ m \sqrt{\tau ^ 2 + (q _ i - q _ {i - 1}) ^ 2} \Bigr ] K _ 1 \Bigl [ m \sqrt{\tau ^ 2 + (q _ {i + 1} - q _ i) ^ 2} \Bigr ]}{\sqrt{\tau ^ 2 + (q _ i - q _ {i - 1}) ^ 2} \sqrt{\tau ^ 2 + (q _ {i + 1} - q _ i) ^ 2}} e ^ {-\tau V(q _ i)}.
+ 		\label{MCLPD d = 1}
+	\end{equation}
+	Average value of kinetic energy for $d = 1$
+	\begin{equation}
+		\langle \sqrt{p ^ 2 + m ^ 2} \rangle = \Bigl \langle \frac{m \tau}{\sqrt{\tau ^ 2 + (\Delta q) ^ 2}} \frac{K _ 0 (m \sqrt{\tau ^ 2 + (\Delta q) ^ 2})}{K _ 1 (m \sqrt{\tau ^ 2 + (\Delta q) ^ 2})} + \frac{\tau ^ 2 - (\Delta q) ^ 2}{\tau (\tau ^ 2 + (\Delta q) ^ 2)} \Bigr \rangle.
+		\label{Kinetic Energy d = 1}
+	\end{equation}
+
+	Density matrix in coordinate representation for $d = 2$
+	\begin{align}
+		\nonumber
+		\rho (q '', q '; \tau) =& \frac{m ^ 3 \tau}{2 \pi} \cdot \frac{1 + m \sqrt{\tau ^ 2 + (q '' - q ') ^ 2}}{\bigl ( m \sqrt{\tau ^ 2 + (q '' - q ') ^ 2} \bigr ) ^ 3} \cdot \\
+		\cdot& \exp \Bigl [ - m \sqrt{\tau ^ 2 + (q '' - q ') ^ 2} \Bigr ] e ^ {- \tau V (q ')}.
+		\label{Density Matrix d = 2}
+	\end{align}
+	Markov chain limit probability density for $d = 2$
+	\begin{align}
+		\pi (q _ i) =& \frac{1 + m \sqrt{\tau ^ 2 + (q _ i - q _ {i - 1}) ^ 2}}{\bigl ( m \sqrt{\tau ^ 2 + (q _ i - q _ {i - 1}) ^ 2} \bigr ) ^ 3} \cdot \frac{1 + m \sqrt{\tau ^ 2 + (q _ {i + 1} - q _ i) ^ 2}}{\bigl ( m \sqrt{\tau ^ 2 + (q _ {i + 1} - q _ i) ^ 2} \bigr ) ^ 3} \cdot \\
+		\cdot& \exp \Bigl [ - m \sqrt{\tau ^ 2 + (q _ i - q _ {i - 1}) ^ 2} - m \sqrt{\tau ^ 2 + (q _ {i + 1} - q _ i) ^ 2} \Bigr ] e ^ {- \tau V (q _ i)}.
+		\label{MCLPD d = 2}
+	\end{align}
+	Average value of kinetic energy for $d = 2$
+	\begin{equation}
+		\langle \sqrt{p ^ 2 + m ^ 2} \rangle = \dots
+		\label{Kinetic Energy d = 2}
+	\end{equation}
+
+\section{RPIMC calculations for oscillator model in two dimensions}
+	Non-relativistic (NR) and ultra-relativistic (UR) limit energy
+	\begin{equation}
+		E _ {NR} = \dots ,
+		\label{Non-relativistic energy d = 2}
+	\end{equation}
+	\begin{equation}
+		E _ {UR} = \dots .
+		\label{Ultra-relativistic energy d = 2}
+	\end{equation}
+
+
+\section{Neural network calculations}
+	Oscillator potential
+	\begin{equation}
+		V (q) = \frac{1}{2} m \omega ^ 2 q ^ 2.
+	\end{equation}
+	Let's choose parameters values
+	\begin{align}
+		\nonumber
+		& m = 100, \\
+		\nonumber
+		& \omega = 1, \\
+		\nonumber
+		& N _ t = 10, \\
+		\nonumber
+		& \tau = e / 10 \approx 0.2718 \dots .
+	\end{align}
+
+\end{document}
