@@ -1,7 +1,7 @@
-from Model import model
+from System import system
 import numpy as np
 
-class oscillator(model):
+class oscillator(system):
     
     def __init__(self,hbar=1,m=1,w=1):
         super().__init__(m, hbar)

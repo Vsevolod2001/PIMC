@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 import random
-from constants import N_nod
+from NFconstants import N_nod
 
 def set_random_seed(seed):
     torch.manual_seed(seed)
@@ -32,7 +32,7 @@ class MY_Dataset(Dataset):
         
 
 
-n_dist=torch.distributions.Normal(loc=torch.zeros(N_nod), scale=torch.ones(N_nod))
-DS=MY_Dataset(n_dist,N_nod)
-DS.sample(2**8)
-train_loader = DataLoader(DS, batch_size=256, shuffle=True)
+normal_dist=torch.distributions.Normal(loc=torch.zeros(N_nod), scale=torch.ones(N_nod))
+DS=MY_Dataset(normal_dist,N_nod)
+DS.sample(2**15)
+train_loader = DataLoader(DS, batch_size=2**9, shuffle=True)

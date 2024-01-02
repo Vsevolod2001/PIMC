@@ -1,5 +1,5 @@
 import numpy as np
-from constants import N_nod,a
+from NFconstants import N_nod,a
 
 N=N_nod
 O=np.zeros((N,N))
