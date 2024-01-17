@@ -1,0 +1,173 @@
+\documentclass[12pt,a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[OT1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{multirow}
+\usepackage{lettrine}
+
+\usepackage[unicode, pdftex]{hyperref}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\usepackage{ragged2e}
+ 
+\title{Обезразмеривание релятивистского осциллятора}
+\author{Сальников Дмитрий}
+
+\begin{document}
+\maketitle
+
+Я считаю, что лучше сразу работать в естественной системе $\hbar = c = 1$, так будет удобнее. Так же в технической реализации, на мой взгляд, стоит сразу вычесть массу из полной энергии, чтобы в нерелятивистком пределе получался стандартный гамильтониан без большой постоянной массовой добавки. Сева утверждал, что с этим могут возникнуть проблемы, которые возникают с гамильтонианом Дирака, но я думаю, что здесь их быть не должно, поскольку дисперсионное соотношение для такого гамильтониана явно не включают отрицательные энергии, как это происходит в теории с гамильтонианом Дирака.
+
+В таком случае гамильтониан и коммутационные соотношения в произвольном числе измерений ($p \equiv |{\bf p}|$, $q \equiv |{\bf q}|$)  имеют вид :
+
+\begin{equation}\label{general}
+H = \sqrt{p^2 + m^2} - m + \dfrac{m\omega^2 q^2}{2},
+\end{equation}
+\begin{equation}
+[q_i, p_j] = i\delta_{ij}.
+\end{equation}
+
+
+Если обезразмеривать величины единым образом для любых масс и частот, могут быть проблемы в одном из предельных случаев. Поэтому разумно будет применить два разных варианта для случаев $m < \omega$ и $m > \omega$.
+
+В случае $m > \omega$ в нерелятивистком пределе гамильтониан (\ref{general}) будет иметь стандартный вид:
+
+\begin{equation}
+H = \dfrac{p^2}{2m} + \dfrac{m\omega^2 q^2}{2}.
+\end{equation}
+
+Переход к безразмерным переменным происходит стандартным образом:
+
+\begin{equation}
+p \to \sqrt{m\omega} \, p, \quad q \to \frac{q}{\sqrt{m\omega}}, \quad H \to \omega H.
+\end{equation}
+
+Таким образом, безразмерный гамильтаниан будет иметь вид:
+
+\begin{equation}\label{nonrelativistic}
+H =  \dfrac{p^2}{2} + \dfrac{q^2}{2}.
+\end{equation}
+
+В случае $m > \omega$ перейдём к безразмерным переменным в гамильтониан (\ref{general}) точно так же
+
+\begin{equation}
+\omega H = \sqrt{m\omega p^2 + m^2} - m + \dfrac{\omega q^2}{2},
+\end{equation}
+
+\begin{equation}
+H = \sqrt{\left(\frac{m}{\omega}\right) p^2 + \left(\frac{m}{\omega}\right)^2} -  \dfrac{m}{\omega} + \dfrac{q^2}{2}.
+\end{equation}
+
+Дальше воспользуемся стандартным приёмом:
+
+\begin{equation}
+H = \left[ \sqrt{\left(\frac{m}{\omega}\right) p^2 + \left(\frac{m}{\omega}\right)^2} -  \dfrac{m}{\omega} \right] \times \dfrac{ \left[ \sqrt{\left(\frac{m}{\omega}\right) p^2 + \left(\frac{m}{\omega}\right)^2} +  \frac{m}{\omega} \right]}{ \left[ \sqrt{\left(\frac{m}{\omega}\right) p^2 + \left(\frac{m}{\omega}\right)^2} +  \frac{m}{\omega} \right]} + \dfrac{q^2}{2},
+\end{equation}
+
+\begin{equation}
+H =  \dfrac{ \left(\frac{m}{\omega}\right) p^2 }{ \left[ \sqrt{\left(\frac{m}{\omega}\right) p^2 + \left(\frac{m}{\omega}\right)^2} +  \frac{m}{\omega} \right]} + \dfrac{q^2}{2},
+\end{equation}
+
+\begin{equation}\label{largemass}
+H =  \dfrac{ p^2 }{ 1 + \sqrt{1 + \left(\frac{\omega}{m}\right) p^2}} + \dfrac{q^2}{2}.
+\end{equation}
+
+Таким образом, при $m > \omega$ безразмерный параметр $\frac{\omega}{m}$ всегда меньше единицы, и при $m \gg \omega$ гамильтониан переходит в (\ref{nonrelativistic}). 
+
+Теперь рассмотрим ультрарелятивисткий случай:
+
+\begin{equation}
+H = p - m + \dfrac{m\omega^2 q^2}{2}.
+\end{equation}
+
+Обезразмеривание в таком пределе имеет вид:
+
+\begin{equation}
+p \to (m\omega^2)^{1/3}\, p, \quad q \to \frac{q}{(m\omega^2)^{1/3}}, \quad H \to (m\omega^2)^{1/3}  H,
+\end{equation}
+
+\begin{equation}
+(m\omega^2)^{1/3} H = (m\omega^2)^{1/3} p - m + \dfrac{m\omega^2 q^2}{2(m\omega^2)^{2/3}},
+\end{equation}
+
+\begin{equation}\label{relativistic}
+H = p - \left(\dfrac{m}{\omega}\right)^{2/3} + \dfrac{q^2}{2}.
+\end{equation}
+
+Поэтому в случае $m < \omega$ имеет смысл обезразмеривать гамильтониан (\ref{general}) так же:
+
+\begin{equation}
+(m\omega^2)^{1/3} H = \sqrt{(m\omega^2)^{2/3} p^2 + m^2} - m + \dfrac{m\omega^2 q^2}{2 (m\omega^2)^{2/3}},
+\end{equation}
+
+\begin{equation}
+ H = \sqrt{p^2 + \left(\frac{m}{\omega} \right)^{4/3}} - \left(\frac{m}{\omega} \right)^{2/3}  + \dfrac{q^2}{2},
+\end{equation}
+
+Таким образом, при $m < \omega$ безразмерный параметр $\frac{m}{\omega}$ всегда меньше единицы, и при $m \ll \omega$ гамильтониан переходит в (\ref{relativistic}). 
+
+
+\
+
+Итог:
+
+\
+
+1. $m > \omega$
+
+\begin{equation}
+p \to \sqrt{m\omega} \, p, \quad q \to \frac{q}{\sqrt{m\omega}}, \quad H \to \omega H.
+\end{equation}
+
+\begin{equation}\label{largemass}
+H =  \dfrac{ p^2 }{ 1 + \sqrt{1 + \left(\frac{\omega}{m}\right) p^2}} + \dfrac{q^2}{2}
+\end{equation}
+
+если не вычитать из исходного гамильтониана  массу:
+
+\begin{equation}\label{largemass}
+H =  \dfrac{ p^2 }{ 1 + \sqrt{1 + \left(\frac{\omega}{m}\right) p^2}} + \dfrac{q^2}{2} + \dfrac{m}{\omega}
+\end{equation}
+
+2. $m < \omega$
+
+\begin{equation}
+p \to (m\omega^2)^{1/3}\, p, \quad q \to \frac{q}{(m\omega^2)^{1/3}}, \quad H \to (m\omega^2)^{1/3}  H,
+\end{equation}
+
+\begin{equation}
+ H = \sqrt{p^2 + \left(\frac{m}{\omega} \right)^{4/3}} - \left(\frac{m}{\omega} \right)^{2/3}  + \dfrac{q^2}{2},
+\end{equation}
+
+если не вычитать из исходного гамильтониана  массу:
+
+\begin{equation}
+ H = \sqrt{p^2 + \left(\frac{m}{\omega} \right)^{4/3}} + \dfrac{q^2}{2},
+\end{equation}
+
+3. $m = \omega$, оба варианта дадут
+
+\begin{equation}
+ H = \sqrt{p^2 + 1} - 1 + \dfrac{q^2}{2},
+\end{equation}
+
+если не вычитать из исходного гамильтониана  массу:
+
+\begin{equation}
+ H = \sqrt{p^2 + 1} + \dfrac{q^2}{2},
+\end{equation}
+
+\end{document}
+
+
+
+
+
+
