@@ -1,6 +1,8 @@
-N_nod=10000
-N_traj=30000
-a=20/N_nod
+N_nod=30
+N_traj=1000
+a=10/N_nod
+
+
 d=2*(a)**0.5
 D=2
 n_att=10
@@ -22,4 +24,4 @@ H=(X_Right-X_Left)/Bins
 g0=1
 q0=1
 
-NG_points=N_nod//10
+NG_points=N_nod

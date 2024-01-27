@@ -1,4 +1,4 @@
-from constants import a, NG_points
+from NFconstants import a, NG_points
 import numpy as np
 
 class Value:
@@ -34,4 +34,4 @@ DELTA_X_POW_2=Value(delta_x_pow_2,2)
 P_POW_2=Value(p_pow_2,2)
 TEST_CORR=Value(test_corr,2)
 KIN=Value(Kin,2)
-G=np.array([Value(corr,2,i) for i in range(1,NG_points+1)])
+G=np.array([Value(corr,2,i) for i in range(0,NG_points)])

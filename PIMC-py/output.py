@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from constants import N_nod, N_traj, a, n_att, sweeps
+from constants import N_nod, N_traj, a, n_att, sweeps, D, d
 def MNK(X,Y,S):
     if (len(X)!=len(Y)):
         print("Y",len(X),len(Y))
@@ -70,14 +70,18 @@ def graph_Probdens(dens,theor_dens,n_bins,x_left,x_right):
     plt.axis([x_left,x_right,0,1.5*Max])
     plt.show()
 
-def graph_Termalization(Varr,meash,step,max_value=1):
+def graph_Termalization(Varr,meash,step):
     it=[(i+1)*step for i in range(meash)]
     plt.figure()
     plt.errorbar(it,Varr[0],xerr=0,yerr=Varr[1],fmt='none',ecolor="red")
     plt.scatter(it,Varr[0],s=10)
     plt.grid(True)
     sweeps=meash*step
-    plt.axis([0,sweeps,0,max_value])
+    MIN=min(Varr[0])
+    MAX=max(Varr[0])
+    delta=MAX-MIN
+    plt.axis([0,sweeps,MIN-0.1*delta,MAX+0.1*delta])
+    plt.title("N_nod="+str(N_nod)+" N_traj="+str(N_traj)+" a="+str(a)+" n_att="+str(n_att)+" D="+str(D)+" d="+str(d))
     plt.show()
     
 def graph_lindependence(parametrs,values,param_name,value_name,n_experiments):
@@ -85,7 +89,7 @@ def graph_lindependence(parametrs,values,param_name,value_name,n_experiments):
     plt.xlabel(param_name,fontsize=17)
     plt.ylabel(value_name,fontsize=17)
     plt.title("N_nod="+str(N_nod)+" N_traj="+str(N_traj)+" a="+str(a)+" n_att="+str(n_att)+" sweeps="+str(sweeps))
-    coeffs=graph(parametrs,values[0],values[1] * (N_traj-1) ** -0.5)
+    coeffs=graph(parametrs,values[0],values[1])
     plt.legend([value_name+"="+"("+str(coeffs[0])[:5]+r"$\pm$"+str(coeffs[2])[:5]+")"+param_name+"+"+"("+str(coeffs[1])[:5]+r"$\pm$"+str(coeffs[3])[:5]+")"])
     MAX=max(values[0])
     MIN=min(values[0])

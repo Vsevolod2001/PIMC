@@ -26,3 +26,12 @@ for s in range(1,Smax+1):
 if N%2==0:
     n[N-1]=(a/(4+a**2))**0.5
 diag_mat=np.diag(n)
+
+C=np.dot(O,diag_mat)
+
+A=np.zeros((N_nod,N_nod))
+for i in range(N_nod):
+    A[i][(i-1)%N_nod]=-1
+    A[i][i]=2+a**2
+    A[i][(i+1)%N_nod]=-1
+A=A/a    

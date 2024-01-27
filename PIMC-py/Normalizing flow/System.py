@@ -8,7 +8,7 @@ class system:
     def T(self,diff):
         return self.m * (diff) ** 2 / (2 * a ** 2)
     
-    def V(self,currp):
+    def V(self,x):
         return 0
     
     def S(self,currp,nextp):
@@ -22,7 +22,7 @@ class system:
         diff=x_next-x
         Full_T=torch.sum(self.T(diff),axis=1)
         Full_V=torch.sum(self.V(x),axis=1)
-        Full_S=Full_T+Full_V
+        Full_S=a*(Full_T+Full_V)
         return Full_S    
             
         

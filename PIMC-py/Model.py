@@ -10,5 +10,7 @@ class model:
         return 0
     def S(self,currp,nextp):
         return a * (self.T(currp,nextp) + self.V(currp)) / self.hbar
+    def dS(self,prevp,currp,nextp,new):
+        return a * (self.T(new,nextp)-self.T(currp,nextp)+self.T(prevp,new)-self.T(prevp,currp)+self.V(new)-self.V(currp)) / self.hbar
 
     

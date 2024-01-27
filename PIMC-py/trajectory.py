@@ -2,7 +2,7 @@ import numpy as np
 from constants import N_nod,a,d,n_att,D
 from Model import model
 import Value
-from andist import O, diag_mat
+from andist import C
 class trajectory:
 
     def __init__(self,x,model):
@@ -76,8 +76,7 @@ class trajectory:
         
         if method=="an":
             y=np.random.normal(size=(N_nod))
-            y1=np.dot(diag_mat,y)
-            x=np.dot(O,y1)
+            x=np.dot(C,y)
         
         return trajectory(x,model)
     

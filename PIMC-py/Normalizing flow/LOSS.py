@@ -6,10 +6,9 @@ class KL_with_S(nn.Module):
     def __init__(self,S):
         super().__init__()
         self.S=S
-    def forward(self,x,log_prob):
+    def forward(self,x,log_abs_det):
         S=self.S(x)
-        #S=torch.zeros(log_prob.shape[0])
-        loss=torch.mean(S+log_prob)
+        loss=torch.mean(S-log_abs_det)
         return loss
 
 S_osc=basic_oscillator.get_S()

@@ -7,9 +7,8 @@ class oscillator(system):
         super().__init__(m, hbar)
         self.w=w
         
-    
-    def V(self,currp):
-        return self.m * (self.w) ** 2 * currp ** 2 / 2
+    def V(self,x):
+        return self.m * (self.w) ** 2 * x ** 2 / 2
     
     def theor_Psi2(self,x):
         L=(self.hbar/(self.m * self.w))**0.5

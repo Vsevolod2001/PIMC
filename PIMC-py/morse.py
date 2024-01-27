@@ -1,11 +1,11 @@
 import numpy as np
 from math import gamma
 from Model import model
-from constants import MASS, HBAR, G, Q
+from constants import MASS, HBAR, g0, q0
 
 class morse(model):
     
-    def __init__(self,hbar=HBAR,m=MASS,g=G,q=Q):
+    def __init__(self,hbar=HBAR,m=MASS,g=g0,q=q0):
         super().__init__(m, hbar)
         self.g=g
         self.q=q
