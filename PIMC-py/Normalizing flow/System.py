@@ -6,7 +6,7 @@ class system:
         self.hbar = hbar
     
     def T(self,diff):
-        return self.m * (diff) ** 2 / (2 * a ** 2)
+        return 0
     
     def V(self,x):
         return 0
