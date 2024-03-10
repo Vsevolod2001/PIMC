@@ -1,22 +1,21 @@
-from System import system
+from System import System
 from NFconstants import a
 import numpy as np
+import torch
 
-class oscillator(system):
+pi=torch.tensor(np.pi)
+
+class Oscillator(System):
     
-    def __init__(self,hbar=1,m=1,w=1):
-        super().__init__(m, hbar)
-        self.w=w
+    def __init__(self):
+        super().__init__()
+        self.normalizer = 0.5 * torch.log( 2 * pi * a )
     
     def T(self,diff):
-        return self.m * (diff) ** 2 / (2 * a ** 2)
+        t = (diff) ** 2 / (2 * a ** 2)
+        return t
         
     def V(self,x):
-        return self.m * (self.w) ** 2 * x ** 2 / 2
+        return x ** 2 / 2
     
-    def theor_Psi2(self,x):
-        L=(self.hbar/(self.m * self.w))**0.5
-        z=x/L
-        return (np.pi) ** (-0.5) * np.exp(-z ** 2) /L
-
-basic_oscillator=oscillator()
+        

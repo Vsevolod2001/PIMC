@@ -3,25 +3,22 @@ from torch import nn
 import numpy as np
 pi=torch.tensor(np.pi)
 from NFconstants import N_nod
-import NFoscillator
-from NFoscillator import basic_oscillator
-from NFrel_oscillator import nr_rel_oscillator
-from NFrel_oscillator import ur_rel_oscillator
-from NFur_oscillator import basic_ur
-from NFrel_oscillator import rel_oscillator_100
-from NFrel_oscillator import unit_rel
-from NFRelAbs import rel_abs
+
 
 
 class KL_with_S(nn.Module):
+    
     def __init__(self,S):
         super().__init__()
         self.S=S
+    
     def forward(self,x,log_abs_det):
         S=self.S(x)
         loss=torch.mean(S-log_abs_det)
-        return loss-(N_nod / 2) * (1+torch.log(2*pi))
+        loss-=(N_nod / 2) * (1+torch.log(2*pi))
+        return loss
 
+"""    
 S_osc=basic_oscillator.get_S()
 KL_osc=KL_with_S(S_osc)
 
@@ -42,3 +39,4 @@ KL_abs=KL_with_S(S_abs)
 
 S_1rel=unit_rel.get_S()
 KL_1rel=KL_with_S(S_1rel)
+"""

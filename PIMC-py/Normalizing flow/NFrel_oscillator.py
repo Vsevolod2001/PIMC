@@ -1,34 +1,28 @@
-from System import system
+from System import System
 from NFconstants import a
 import numpy as np
 import torch
 from torch.special import scaled_modified_bessel_k1 as Q1
+from dimensionlesser import get_coeffs
+pi=torch.tensor(np.pi)
+a=torch.tensor(a)
 
-class rel_oscillator(system):
+class Rel_Oscillator(System):
     
-    def __init__(self,sigma,hbar=1,m=1,w=1):
-        super().__init__(m, hbar)
-        self.w=w
-        self.sigma=sigma
+    def __init__(self,**args):
+        super().__init__()
+        self.sigma=args["sigma"]
+        self.s1, self.s2, self.s3 = get_coeffs(self.sigma)
+        self.normalizer = torch.log(pi * self.s1 / (self.s2 * Q1(self.s2 * a))) 
     
     def T(self,diff):
-        y=( 1 + (diff/a)**2 * self.sigma)**0.5
-        ln=torch.log(Q1( a*y / self.sigma )/y)
-        t = (y-1) / self.sigma - ln / a
-        
-        
-        pi=torch.tensor(np.pi)
-        delta=0.5 * torch.log( 2*a / (pi * self.sigma)) / a
-        return t-delta
+        y=( 1 + (diff/a)**2 * (self.s1) ** (-2))**0.5
+        ln=torch.log(Q1( self.s2 * a * y )/(y * Q1(self.s2 * a)))
+        t = self.s2 * (y-1) - ln / a
+        return t
     
     def V(self,x):
-        return self.m * (self.w) ** 2 * x ** 2 / 2
+        return  self.s3 * x ** 2 / 2
     
 
 
-nr_rel_oscillator=rel_oscillator(0.0001)
-ur_rel_oscillator=rel_oscillator(10000)
-
-rel_oscillator_100=rel_oscillator(100)
-
-unit_rel=rel_oscillator(1)

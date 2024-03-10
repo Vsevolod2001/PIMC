@@ -34,5 +34,5 @@ class MY_Dataset(Dataset):
 
 normal_dist=torch.distributions.Normal(loc=torch.zeros(N_nod), scale=torch.ones(N_nod))
 DS=MY_Dataset(normal_dist,N_nod)
-DS.sample(2**21)
-train_loader = DataLoader(DS, batch_size=2**13, shuffle=True,num_workers=3)
+DS.sample(2**18)
+train_loader = DataLoader(DS, batch_size=2**11, shuffle=True)
