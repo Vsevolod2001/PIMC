@@ -1,0 +1,28 @@
+from System import System
+import numpy as np
+import torch
+from NFandist import calc_Z, get_A
+from LOSS import KL_with_S
+
+pi=torch.tensor(np.pi)
+
+class Morse(System):
+    
+    def __init__(self,n_nod,beta,**args):
+        super().__init__(n_nod,beta)
+        self.normalizer = 0.5 * torch.log( 2 * pi * self.a )
+        self.alpha=args["alpha"]
+    
+    def T(self,diff):
+        t = (diff) ** 2 / (2 * self.a ** 2)
+        return t
+        
+    def V(self,x):
+        y=torch.exp(-self.alpha * x)-1
+        return 0.5 * (y**2 - 1)
+    
+    
+    
+
+      
+        

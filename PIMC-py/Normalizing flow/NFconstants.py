@@ -1,5 +1,6 @@
-N_nod=16
+K_nod=6
+N_nod=2 ** K_nod
 N_traj=1000
-beta=10
-a=beta/N_nod
+Beta=10
+a=Beta/N_nod
 NG_points=N_nod

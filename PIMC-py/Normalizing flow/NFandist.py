@@ -1,5 +1,5 @@
 import numpy as np
-from NFconstants import N_nod, beta
+from NFconstants import N_nod, Beta
 
 def get_O(N):
     O=np.zeros((N,N))

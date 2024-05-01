@@ -1,9 +1,12 @@
 import torch
-from NFconstants import a, N_nod
 from LOSS import KL_with_S
 class System:
-    def __init__(self,**args):
+    def __init__(self,n_nod,beta,**args):
         self.normalizer=0
+        self.Log_Z=0
+        self.n_nod=n_nod
+        self.beta=beta
+        self.a=beta/n_nod
     
     def T(self,diff):
         return 0
@@ -11,9 +14,9 @@ class System:
     def V(self,x):
         return 0
     
-    def S(self,currp,nextp):
+    def S(self,currp,nextp,a):
         diff=currp-nextp
-        return a * (self.T(diff) + self.V(currp)) / self.hbar
+        return self.a * (self.T(diff) + self.V(currp)) 
   
     
     def Full_S(self,x):
@@ -22,7 +25,7 @@ class System:
         diff=x_next-x
         Full_T=torch.sum(self.T(diff),axis=1)
         Full_V=torch.sum(self.V(x),axis=1)
-        Full_S=a*(Full_T+Full_V)+N_nod*self.normalizer
+        Full_S=self.a*(Full_T+Full_V)+self.n_nod*self.normalizer+self.Log_Z
         return Full_S    
             
         
@@ -33,11 +36,11 @@ class System:
     
     def get_KL(self):
         S=self.get_S()
-        KL=KL_with_S(S)
+        KL=KL_with_S(S,self.n_nod)
         return KL
     
-    def make_KL(cls,**args):
-        obj=cls(**args)
+    def make_KL(cls,n_nod,beta,**args):
+        obj=cls(n_nod,beta,**args)
         KL=obj.get_KL()
         return KL
     
