@@ -13,10 +13,6 @@ class System:
     
     def V(self,x):
         return 0
-    
-    def S(self,currp,nextp,a):
-        diff=currp-nextp
-        return self.a * (self.T(diff) + self.V(currp)) 
   
     
     def Full_S(self,x):
@@ -43,5 +39,23 @@ class System:
         obj=cls(n_nod,beta,**args)
         KL=obj.get_KL()
         return KL
+    
+    def U(self,x):    #U=-dV/dx
+        return 0
+    
+    def Y(self,diff):      #Y=dT(xi)/dxi
+        return 0
+    
+    def F(self,x):   #F=-dS/dx
+        a = self.a
+        x_next = torch.roll(x,-1,1)
+        x_prev = torch.roll(x,1,1)
+        diff_next = x_next-x
+        diff_prev = x-x_prev
+        
+        F = a * self.U(x) + a * self.Y(diff_next) - a * self.Y(diff_prev)
+        return F
+        
+        
     
     

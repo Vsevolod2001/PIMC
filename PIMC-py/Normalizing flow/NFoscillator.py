@@ -22,6 +22,14 @@ class Oscillator(System):
         return x ** 2 / 2
     
     
+    def U(self,x):
+        return -x
+    
+    def Y(self,diff):
+        return diff / (self.a ** 2)
+        
+    
+    
     
     def mat_S(self,x):
         A=(self.mat).to(x.device)
@@ -42,4 +50,5 @@ class Oscillator(System):
         KL=KL_with_S(mat_S,self.n_nod)
         return KL
       
-        
+    def theor_Psi2(self,z):
+        return (pi) ** (-0.5) * np.exp(-z ** 2)     

@@ -18,3 +18,10 @@ class Ur_Oscillator(System):
     
     def V(self,x):
         return x ** 2 / 2
+    
+    def U(self,x):
+        return -x
+    
+    def Y(self,diff):
+        v=diff / self.a
+        return 2 / (self.a ** 2) * v / (1 + v ** 2)

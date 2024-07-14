@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from NFandist import calc_Z, get_A
 from LOSS import KL_with_S
+from math import gamma
 
 pi=torch.tensor(np.pi)
 
@@ -22,6 +23,12 @@ class Morse(System):
         return 0.5 * (y**2 - 1)
     
     
+    def theor_Psi2(self,x):
+        alpha = self.alpha
+        N = 2**(2 / alpha - 1) * (2-alpha)/( (alpha ** (2/alpha - 1)) * gamma(2/alpha))
+        power = (-2 / alpha) * np.exp(-alpha * x) - (2-alpha) * x
+        P=N*np.exp(power)
+        return P
     
 
       

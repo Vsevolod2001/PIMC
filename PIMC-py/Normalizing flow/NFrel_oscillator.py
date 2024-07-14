@@ -1,7 +1,8 @@
 from System import System
 import numpy as np
 import torch
-from torch.special import scaled_modified_bessel_k1 as Q1
+#from torch.special import scaled_modified_bessel_k1 as Q1
+from bessel import my_Q1 as Q1
 from dimensionlesser import get_coeffs
 pi=torch.tensor(np.pi)
 
@@ -15,8 +16,9 @@ class Rel_Oscillator(System):
         self.normalizer = torch.log(pi * self.s1 / (self.s2 * Q1(self.s2 * a))) 
     
     def T(self,diff):
-        a=self.a
-        y=( 1 + (diff/a)**2 * (self.s1) ** (-2))**0.5
+        a=torch.tensor(self.a)
+        c=(self.s1) ** (-2)
+        y=(1 + (diff/a)**2 * c)**0.5
         ln=torch.log(Q1( self.s2 * a * y )/(y * Q1(self.s2 * a)))
         t = self.s2 * (y-1) - ln / a
         return t
