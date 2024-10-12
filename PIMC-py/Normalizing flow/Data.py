@@ -19,7 +19,7 @@ class MY_Dataset(Dataset):
         self.distribution = distribution
         self.n_nod = n_nod
         self.features = torch.tensor(0)
-        self.n_sample = 2**20
+        self.n_sample = 2**15
 
     def __len__(self):
         return self.n_sample
@@ -35,4 +35,4 @@ class MY_Dataset(Dataset):
 #normal_dist=torch.distributions.Uniform(torch.zeros(N_nod), torch.ones(N_nod))
 normal_dist=torch.distributions.Normal(loc=torch.zeros(N_nod), scale=torch.ones(N_nod))
 DS=MY_Dataset(normal_dist,N_nod)
-train_loader = DataLoader(DS, batch_size=2**10, shuffle=True,num_workers=3)
+train_loader = DataLoader(DS, batch_size=2**6, shuffle=True)

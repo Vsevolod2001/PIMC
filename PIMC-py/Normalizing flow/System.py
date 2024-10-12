@@ -1,12 +1,13 @@
 import torch
 from LOSS import KL_with_S
 class System:
-    def __init__(self,n_nod,beta,**args):
+    def __init__(self,n_nod,beta,DIM=1,**args):
         self.normalizer=0
         self.Log_Z=0
         self.n_nod=n_nod
         self.beta=beta
         self.a=beta/n_nod
+        self.DIM = DIM
     
     def T(self,diff):
         return 0

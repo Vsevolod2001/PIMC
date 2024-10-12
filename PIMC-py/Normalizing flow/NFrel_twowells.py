@@ -1,9 +1,8 @@
 from System import System
 import numpy as np
 import torch
-from NFandist import calc_Z, get_A
 from LOSS import KL_with_S
-from torch.special import scaled_modified_bessel_k1 as Q1
+from bessel import my_Q1 as Q1
 
 pi=torch.tensor(np.pi)
 
