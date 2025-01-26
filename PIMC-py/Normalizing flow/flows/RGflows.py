@@ -117,18 +117,19 @@ class RGflows(nn.Module):
     def f(self, x: torch.Tensor,params=torch.tensor([])) -> torch.Tensor:
         
         with torch.no_grad():
-            sum_log_abs_det = torch.zeros(x.size(0)).to(x.device)
-            params=torch.tensor([]).to(x.device)
-            x = torch.matmul(x,self.O.to(x.device))
+            res=x.clone()
+            sum_log_abs_det = torch.zeros(res.size(0)).to(res.device)
+            params=torch.tensor([]).to(res.device)
+            res = torch.matmul(res,self.O.to(res.device))
         
             for i in range(len(self.nflist)):
-                z = x[:,self.masks[i]]
+                z = res[:,self.masks[i]]
                 tmp = z.clone()
                 z, log_abs_det = ((self.nflist)[i]).f(z,params)
                 sum_log_abs_det += log_abs_det
                 params = torch.cat((params,tmp.detach()),dim=-1)
-                x[:,self.masks[i]] = z    
-        return x, sum_log_abs_det
+                res[:,self.masks[i]] = z    
+        return res, sum_log_abs_det
     
     
         
@@ -143,7 +144,7 @@ class RGflows(nn.Module):
         
         sum_log_abs_det = torch.zeros(z.size(0)).to(z.device)
         params = torch.tensor([]).to(z.device)
-        res = torch.zeros((z.shape[0],z.shape[1]))
+        res = z.clone()
         
         for i in range(len(self.nflist)):
             x=z[:,self.masks[i]]
@@ -151,7 +152,7 @@ class RGflows(nn.Module):
             sum_log_abs_det += log_abs_det
             params = torch.cat((params,x),dim=-1)
             res[:,self.masks[i]] = res1
-        res = torch.matmul(res,Ot.to(z.device))    
+        res = torch.matmul(res,self.Ot.to(z.device))    
         return res, sum_log_abs_det
     
         
@@ -163,9 +164,17 @@ class RGflows(nn.Module):
         with torch.no_grad():
             x, log_abs_det=self.g(t)
         
-        
         return x, log_abs_det
     
- 
+    def set_type(self,type):
+        if type == "float":
+            self.float()
+            self.O = self.O.float()
+            self.Ot = self.Ot.float()
+        elif type == "double":
+            self.double()
+            self.O = self.O.double()
+            self.Ot = self.Ot.double()    
+    
 
     

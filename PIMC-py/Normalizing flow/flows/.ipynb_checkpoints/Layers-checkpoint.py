@@ -31,6 +31,6 @@ class AffineCouplingLayer(nn.Module):
         x1 = torch.cat((x1,params),dim=-1)
         t, s = self.theta(x1)
         z1, z2 = x1, torch.exp(-s)*(x2-t) 
-        log_det = s.sum(-1) 
+        log_det = -s.sum(-1) 
         x[:,mask2] = z2
         return x, log_det    

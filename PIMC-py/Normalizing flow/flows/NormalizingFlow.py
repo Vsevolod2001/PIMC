@@ -51,12 +51,12 @@ class NormalizingFlow(nn.Module):
         return len(self.flows)
     
     def f(self, x: torch.Tensor,params=torch.tensor([])) -> Tuple[torch.Tensor, torch.Tensor]:
-        
         with torch.no_grad():
+            res = x.clone()
             if self.ort:
-                x=torch.matmul(x,self.O.to(x.device))
+                res = torch.matmul(res,self.O.to(res.device))
         
-            z, sum_log_abs_det = x, torch.zeros(x.size(0)).to(x.device)
+            z, sum_log_abs_det = res, torch.zeros(res.size(0)).to(res.device)
         
             for flow in self.flows:
                 z, log_abs_det = flow.f(z,params)
