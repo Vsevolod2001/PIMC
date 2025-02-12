@@ -2,7 +2,7 @@ from systems.Nonrel.nonrel_system import nonrel_System
 import numpy as np
 import torch
 from systems.Nonrel.osc_andist import calc_Z, get_A
-pi=torch.tensor(np.pi)
+pi = torch.tensor(np.pi)
 
 class Oscillator(nonrel_System):
     

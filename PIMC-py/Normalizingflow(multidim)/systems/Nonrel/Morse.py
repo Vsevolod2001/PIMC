@@ -7,8 +7,8 @@ pi=torch.tensor(np.pi)
 
 class Morse(nonrel_System):
     
-    def __init__(self,n_nod,beta,**args):
-        super().__init__(n_nod,beta)
+    def __init__(self,n_nod,beta,dim,**args):
+        super().__init__(n_nod,beta,dim)
         self.alpha=args["alpha"]
         
     def V(self,x):

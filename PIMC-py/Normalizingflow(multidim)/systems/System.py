@@ -17,12 +17,12 @@ class System:
   
     
     def Full_S(self,x):
-        Full_S=0
-        x_next=torch.roll(x,-1,1)
-        diff=x_next-x
-        Full_T=torch.sum(self.T(diff),dim=1)
-        Full_V=torch.sum(self.V(x),dim=1)
-        Full_S=self.a*(Full_T+Full_V) + self.n_nod*self.normalizer + self.Log_Z
+        Full_S = 0
+        x_next = torch.roll(x,-1,1)
+        diff = x_next-x
+        Full_T = torch.sum(self.T(diff),dim=1)
+        Full_V = torch.sum(self.V(x),dim=1)
+        Full_S = self.a*(Full_T+Full_V) + self.n_nod*self.normalizer + self.Log_Z
         return Full_S    
             
         

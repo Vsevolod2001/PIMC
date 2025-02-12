@@ -6,15 +6,15 @@ pi=torch.tensor(np.pi)
 
 class X4(nonrel_System):
     
-    def __init__(self,n_nod,beta,**args):
-        super().__init__(n_nod,beta)
-        self.g=args["g"]
+    def __init__(self,n_nod,beta,dim,**args):
+        super().__init__(n_nod,beta,dim)
+        self.g = args["g"]
         
     def V(self,x):
-        return x ** 2 / 2 + self.g * x ** 4
+        return torch.sum(x ** 2 / 2,dim=-1) + self.g * (torch.sum(x ** 2,dim=-1)) ** 2
         
     def U(self,x):
-        return -x - 4 * self.g * x ** 3
+        return -x - 4 * self.g * (torch.sum(x ** 2,dim=-1)) * x
         
     
 

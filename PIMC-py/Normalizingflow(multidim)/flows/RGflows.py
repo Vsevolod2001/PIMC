@@ -21,7 +21,8 @@ class RGflows(nn.Module):
                  hidden_dim_dict,
                  grids_no_grad = 0,
                  p_drop = 0,
-                 sys_dim = 1):
+                 sys_dim = 1,
+                 O_latt = torch.tensor([])):
         
         super().__init__()
         self.nflist = nflist
@@ -35,6 +36,8 @@ class RGflows(nn.Module):
         self.Ot = (torch.t(self.O)).to(device)
         self.p_drop = p_drop
         self.sys_dim = sys_dim
+        self.O_latt = O_latt
+        self.O_latt_t = torch.t(O_latt)
         
     def set_out_dim(self,out_dim):
         self.out_dim = out_dim
@@ -59,9 +62,17 @@ class RGflows(nn.Module):
         nflist = nn.ModuleList(nflist)        
         return nflist    
         
-    def configure_RG_model(masks,n_flows_dict, num_hidden_dict, hidden_dim_dict, grids_no_grad = 0, p_drop = 0, sys_dim = 1):
+    def configure_RG_model(masks,n_flows_dict, num_hidden_dict, hidden_dim_dict, grids_no_grad = 0, p_drop = 0, sys_dim = 1, O_latt = torch.tensor([])):
         flows = RGflows.configure_RG_flows(masks, n_flows_dict, num_hidden_dict, hidden_dim_dict, p_drop=p_drop, sys_dim = sys_dim)
-        return RGflows(flows, masks, n_flows_dict, num_hidden_dict, hidden_dim_dict, grids_no_grad = grids_no_grad,p_drop = p_drop, sys_dim = sys_dim)
+        return RGflows(flows, 
+                       masks, 
+                       n_flows_dict, 
+                       num_hidden_dict, 
+                       hidden_dim_dict, 
+                       grids_no_grad = grids_no_grad, 
+                       p_drop = p_drop, 
+                       sys_dim = sys_dim, 
+                       O_latt = O_latt)
     
     def save(self,filename):
         state_dict = self.state_dict()
@@ -71,7 +82,8 @@ class RGflows(nn.Module):
                     "hidden_dim_dict":self.hidden_dim_dict,
                     "masks":self.masks,
                     "p_drop":self.p_drop,
-                    "sys_dim":self.sys_dim}
+                    "sys_dim":self.sys_dim,
+                    "O_latt":self.O_latt}
         torch.save(model_dict,filename)
     
     def load_model(filename):   
@@ -81,7 +93,8 @@ class RGflows(nn.Module):
                                   model_dict["num_hidden_dict"],
                                   model_dict["hidden_dim_dict"],
                                   p_drop = model_dict["p_drop"],
-                                  sys_dim = model_dict["sys_dim"])
+                                  sys_dim = model_dict["sys_dim"],
+                                  O_latt = model_dict["O_latt"])
         model.load_state_dict(model_dict["state_dict"])
         return model
 
@@ -89,7 +102,6 @@ class RGflows(nn.Module):
         
         sum_log_abs_det = torch.zeros(z.size(0)).to(z.device)
         params=torch.tensor([]).to(z.device)
-        full_mask = []
         
         for i in range(len(self.nflist)):
             x = z[:,self.masks[i],:]
@@ -97,11 +109,14 @@ class RGflows(nn.Module):
             sum_log_abs_det += log_abs_det
             params = torch.cat((params,x.detach()),dim=1)
             z[:,self.masks[i],:] = x          
-        #n_samp = z.shape[0]    
-        #z = torch.reshape(z,(n_samp * self.sys_dim,self.out_dim))
+        
         for _ in range(self.sys_dim):
             z[:,:,_] = torch.matmul(z[:,:,_],self.Ot.to(z.device))
-        #z = torch.reshape(z,(n_samp,self.out_dim,self.sys_dim))
+        
+        if self.O_latt.shape[0]>0:
+            for _ in range(self.out_dim):
+                z[:,_,:] = torch.matmul(z[:,_,:],self.O_latt_t.to(z.device))
+        
         return z, sum_log_abs_det
     
 
@@ -143,15 +158,22 @@ class RGflows(nn.Module):
             res=x.clone()
             sum_log_abs_det = torch.zeros(res.size(0)).to(res.device)
             params=torch.tensor([]).to(res.device)
-            res = torch.matmul(res,self.O.to(res.device))
+            
+            if self.O_latt.shape[0]>0:
+                for _ in range(self.out_dim):
+                    res[:,_,:] = torch.matmul(res[:,_,:],self.O_latt.to(z.device))
+            
+            for _ in range(self.sys_dim):
+                res[:,:,_] = torch.matmul(res[:,:,_],self.O.to(res.device))
         
             for i in range(len(self.nflist)):
-                z = res[:,self.masks[i]]
+                z = res[:,self.masks[i],:]
                 tmp = z.clone()
                 z, log_abs_det = ((self.nflist)[i]).f(z,params)
                 sum_log_abs_det += log_abs_det
                 params = torch.cat((params,tmp.detach()),dim=-1)
-                res[:,self.masks[i]] = z    
+                res[:,self.masks[i],:] = z    
+        
         return res, sum_log_abs_det
     
     
@@ -197,7 +219,10 @@ class RGflows(nn.Module):
         elif type == "double":
             self.double()
             self.O = self.O.double()
-            self.Ot = self.Ot.double()    
-    
+            self.Ot = self.Ot.double()
+
+    def append_aff(self,hidden_dim,num_hidden,num_aff):
+        self.n_flows_dict[8] += 1 
+        self.nflist[0].append_aff(hidden_dim,num_hidden,num_aff)
 
     

@@ -1,4 +1,3 @@
-from NFconstants import N_nod
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -24,10 +23,11 @@ class ThetaNetwork(nn.Module):
         )
 
         self.num_params = num_params
+        self.in_dim = in_dim
         self.out_dim = out_dim
         self.dims = nn.Linear(hidden_dim, out_dim * num_params)
         
-    def configure_theta(num_hidden,hidden_dim,p_drop,in_dim=N_nod//2,out_dim=N_nod//2):
+    def configure_theta(num_hidden,hidden_dim,p_drop,in_dim,out_dim):
         theta=ThetaNetwork(
                 in_dim = in_dim,
                 out_dim = out_dim,

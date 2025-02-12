@@ -1,5 +1,4 @@
 import numpy as np
-from NFconstants import N_nod, Beta
 
 def get_O(N):
     O=np.zeros((N,N))
@@ -56,10 +55,10 @@ def get_C(N,beta):
 def get_A(N,beta):
     A=np.zeros((N,N))
     a=beta/N
-    for i in range(N_nod):
-        A[i][(i-1)%N_nod]=-1
+    for i in range(N):
+        A[i][(i-1)%N]=-1
         A[i][i]=2+a**2
-        A[i][(i+1)%N_nod]=-1
+        A[i][(i+1)%N]=-1
     A=A/a   
     return A
 
@@ -69,9 +68,9 @@ def get_T(N):
     return T
 
 def get_Ainv(N,beta):
-    C=get_C(N,beta)
-    Ct=np.transpose(C)
-    A_inv=np.dot(C,Ct)
+    C = get_C(N,beta)
+    Ct = np.transpose(C)
+    A_inv = np.dot(C,Ct)
     return A_inv
 
 def calc_G(N,beta,n_points="all"):
@@ -105,16 +104,16 @@ def calc_Z(N,beta):
     L = Lambda(k,N,beta)
     a = beta / N
     L = a * L
-    prod=np.prod(L)
-    Z=(prod) ** -0.5
+    prod = np.prod(L)
+    Z = (prod) ** -0.5
     return Z
 
 def Z_inf(beta):
     return 1 / (2 * np.sinh(beta//2) )
 
 def calc_Kin(N,beta):
-    a=beta/N
-    g=calc_G(N,beta,2)
+    a = beta/N
+    g = calc_G(N,beta,2)
     K = (1 - 2 * (g[0]-g[1]) / a) / (2 * a)
     return K
     

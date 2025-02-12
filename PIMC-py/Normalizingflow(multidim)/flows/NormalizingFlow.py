@@ -17,7 +17,7 @@ class NormalizingFlow(nn.Module):
         self.Ot = torch.t(O)
         self.ort = self.O.shape[0]>0
         
-    def configure_flows(n_flows,num_hidden,hidden_dim,p_drop,dim,param_dim=0,mask_config = get_pair_split_masks,sys_dim = 1):  # n_flows=8,...,12
+    def configure_flows(n_flows,num_hidden,hidden_dim,p_drop,dim,param_dim=0,mask_config = get_pair_split_masks,sys_dim = 1):
         flows = []
         split_masks_d = mask_config(dim)
     
@@ -63,3 +63,18 @@ class NormalizingFlow(nn.Module):
                 sum_log_abs_det += log_abs_det
         
         return z, sum_log_abs_det
+
+    def append_aff(self,hidden_dim,num_hidden,num_aff):
+        last = self.flows[-1]
+        split = last.split
+        swap = last.swap
+        in_dim = last.theta.in_dim
+        out_dim = last.theta.out_dim
+        for i in range(num_aff):
+            theta = ThetaNetwork.configure_theta(num_hidden = num_hidden, 
+                                                 hidden_dim = hidden_dim, 
+                                                 p_drop = 0.0,
+                                                 in_dim = in_dim,
+                                                 out_dim = out_dim)
+            self.flows.append(AffineCouplingLayer(theta, split = split, swap = (swap+i+1)%2))
+        
