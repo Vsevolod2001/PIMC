@@ -1,7 +1,6 @@
 from systems.System import System
 import numpy as np
 import torch
-#from torch.special import scaled_modified_bessel_k1 as Q1
 from systems.Rel.bessel import my_Q1 as Q1
 from scipy.special import kv
 
@@ -26,7 +25,7 @@ class rel_System(System):
 
 
     
-    def Y(self,diff):
+    def F_T(self,diff):
         r = diff/self.a
         eta = self.a * self.s2 * ( 1 + (r ** 2) * self.s1 ** (-2) ) ** 0.5
         f = (kv(0,eta)+kv(2,eta))/(2*kv(1,eta))

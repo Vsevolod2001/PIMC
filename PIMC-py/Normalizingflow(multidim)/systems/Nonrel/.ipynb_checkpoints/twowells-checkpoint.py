@@ -14,8 +14,11 @@ class Two_wells(nonrel_System):
     def V(self,x):
         return self.g * (torch.sum(x ** 2,dim=-1) - self.x0 ** 2 ) ** 2
         
-    def U(self,x):
-        return -4*self.g*x*(torch.sum(x**2,dim=-1)-self.x0**2)
+    def F_V(self,x):
+        fv = torch.zeros(x.size(0),self.n_nod,self.dim)
+        for _ in range(self.dim):
+            fv[:,:,_]=-4 * self.g * x[:,:,_] * (torch.sum(x ** 2,dim=-1) - self.x0 ** 2)
+        return fv
     
 
       

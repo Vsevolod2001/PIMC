@@ -25,8 +25,8 @@ class AffineCouplingLayer(nn.Module):
         return z, log_det
 
     def f(self, x: torch.Tensor,params=torch.tensor([])) -> torch.Tensor:
-        mask1=self.split[self.swap]
-        mask2=self.split[(self.swap+1)%2]
+        mask1 = self.split[self.swap]
+        mask2 = self.split[(self.swap+1)%2]
         x1, x2 = x[:,mask1,:], x[:,mask2,:]
         x1 = torch.cat((x1,params),dim = 1)
         t, s = self.theta(x1)

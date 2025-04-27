@@ -1,6 +1,6 @@
-K_nod = 3
+K_nod = 6
 N_nod = 2 ** K_nod
-DIM = 3
+DIM = 1
 Beta = 16
 a = Beta/N_nod
 
@@ -22,7 +22,7 @@ from systems.Ultrarel.ur_oscillator import Ur_Oscillator
 
 osc = Oscillator(N_nod,Beta,DIM)
 anh = X4(N_nod,Beta,DIM,g=1)
-morse = Morse(N_nod,Beta,DIM,alpha=0.5)
+morse = Morse(N_nod,Beta,DIM,alpha=1)
 tw = Two_wells(N_nod,Beta,DIM,g=1,x0=1.41)
 columb = Columb(N_nod,Beta,DIM,alpha=1,R=1)
 

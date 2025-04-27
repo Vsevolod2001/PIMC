@@ -15,7 +15,7 @@ class Morse(nonrel_System):
         y=torch.exp(-self.alpha * x)-1
         return 0.5 * (y**2 - 1)
     
-    def U(self,x):
+    def F_V(self,x):
         e = torch.exp(-self.alpha*x)
         return self.alpha*e*(e-1)
         

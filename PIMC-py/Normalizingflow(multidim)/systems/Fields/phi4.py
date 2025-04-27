@@ -19,3 +19,6 @@ class Phi4(Scalar_Field):
 
     def V_int(self,phi):
         return self.g * torch.sum(phi ** 4, dim=2)
+
+    def F_int(self,phi):
+        return -4 * self.g * phi ** 3 

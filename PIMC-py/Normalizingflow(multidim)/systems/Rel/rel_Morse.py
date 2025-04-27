@@ -14,8 +14,8 @@ class Rel_Morse(rel_System):
     def V(self,x):
         return Morse.V(self,x)
     
-    def U(self,x):
-        return Morse.U(self,x)
+    def F_V(self,x):
+        return Morse.F_V(self,x)
     
 
       

@@ -64,4 +64,36 @@ class Scalar_Field(System):
         full_T = torch.sum(self.T(diff),dim=1)
         full_V = torch.sum(self.V(x),dim=1)
         full_S = (self.h ** self.space_dim) * self.a * (full_T + full_V) + self.n_nod * self.normalizer + self.Log_Z
-        return full_S    
+        return full_S 
+
+    def F_grad(self,phi):
+        f_grad = 0
+        
+        for k in range(self.space_dim):
+            lapl = torch.roll(phi,self.L**k,2) + torch.roll(phi,-self.L**k,2) - 2 * phi
+            f_grad += lapl
+        
+        return f_grad / self.h ** 2
+
+    def F_mass(self,phi):
+        return -self.mass2 * phi
+
+    def F_int(self,phi):
+        return 0
+
+    def F_J(self,phi):
+        return -self.J
+    
+    def F_T(self,phi): #=-dT/d phi
+        f_T = 0
+        d2 = torch.roll(phi,1,1) + torch.roll(phi,-1,1) - 2 * phi
+        f_T += d2
+        return f_T / self.a ** 2
+
+    def F_V(self,phi):
+        return self.F_grad(phi) + self.F_mass(phi) + self.F_int(phi) + self.F_J(phi)
+
+    def F(self,phi):
+        return (self.h ** self.space_dim) * self.a * (self.F_T(phi)+self.F_V(phi))
+
+    

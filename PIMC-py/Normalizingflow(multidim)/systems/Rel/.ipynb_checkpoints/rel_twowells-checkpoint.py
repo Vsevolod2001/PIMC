@@ -14,7 +14,7 @@ class Rel_two_wells(rel_System):
     def V(self,x):
         return Two_wells.V(self,x)
     
-    def U(self,x):
+    def F_V(self,x):
         return Two_wells.U(self,x)
 
       

@@ -37,10 +37,10 @@ class System:
         return KL
     
     
-    def U(self,x):    #U=-dV/dx
+    def F_V(self,x):    #U=-dV/dx
         return 0
     
-    def Y(self,diff):      #Y=dT(xi)/dxi
+    def F_T(self,diff):      #Y=dT(xi)/dxi
         return 0
     
     def F(self,x):   #F=-dS/dx
@@ -50,7 +50,7 @@ class System:
         diff_next = x_next-x
         diff_prev = x-x_prev
         
-        F = a * self.U(x) + a * self.Y(diff_next) - a * self.Y(diff_prev)
+        F = a * self.F_V(x) + a * self.F_T(diff_next) - a * self.F_T(diff_prev)
         return F
         
         

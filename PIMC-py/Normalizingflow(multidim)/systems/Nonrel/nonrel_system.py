@@ -14,5 +14,5 @@ class nonrel_System(System):
         t = (diff) ** 2 / (2 * self.a ** 2)
         return torch.sum(t , dim=-1)
     
-    def Y(self,diff):
+    def F_T(self,diff):
         return diff / (self.a ** 2)   

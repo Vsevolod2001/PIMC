@@ -1,23 +1,22 @@
 import numpy as np
 
 def get_O(N):
-    O=np.zeros((N,N))
+    O = np.zeros((N,N))
     for k in range(N):
-        O[k][0]=1
+        O[k][0] = 1
     
-    if N%2==0:
+    if N%2 == 0:
         for k in range(N):
-            O[k][1]=(-1)**k
+            O[k][1] = (-1) ** k
     
-    ev=int(N%2==0)
-    Smax=(N-1-ev)//2    
+    ev = int(N%2==0)
+    Smax = (N-1-ev)//2    
     
     for s in range(1,Smax+1):
         for k in range(N):
-            O[k][2*s-1+ev]=(2**0.5)*np.cos(2*np.pi*s*k/N)
-            O[k][2*s+ev]=(2**0.5)*np.sin(2*np.pi*s*k/N)
-
-    O=O / (N ** 0.5)
+            O[k][2*s-1+ev] = (2**0.5) * np.cos(2*np.pi*s*k/N)
+            O[k][2*s+ev] = (2**0.5) * np.sin(2*np.pi*s*k/N)
+    O = O / (N ** 0.5)
     return O
 
 def Lambda(k,N,beta):
@@ -42,8 +41,8 @@ def get_diag(N,beta):
     return n    
 
 def get_diag_mat(N,beta):
-    n=get_diag(N,beta)
-    diag_mat=np.diag(n)
+    n = get_diag(N,beta)
+    diag_mat = np.diag(n)
     return diag_mat
 
 def get_C(N,beta):

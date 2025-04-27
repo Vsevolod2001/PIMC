@@ -13,7 +13,7 @@ class Ur_Oscillator(ur_System):
     def V(self,x):
         return Oscillator.V(self,x)
     
-    def U(self,x):
+    def F_V(self,x):
         return Oscillator.U(self,x)
     
 

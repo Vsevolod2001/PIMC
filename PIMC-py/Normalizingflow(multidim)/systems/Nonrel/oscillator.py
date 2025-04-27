@@ -14,7 +14,7 @@ class Oscillator(nonrel_System):
         return torch.sum(x ** 2 / 2, dim=-1)
     
     
-    def U(self,x):
+    def F_V(self,x):
         return -x
       
     def theor_Psi2(self,z):

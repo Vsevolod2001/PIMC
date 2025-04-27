@@ -14,8 +14,8 @@ class Rel_Columb(rel_System):
     def V(self,x):
         return  Columb.V(self,x)
 
-    def U(self,x):
-        return Columb.U(self,x)
+    def F_V(self,x):
+        return Columb.F_V(self,x)
         
     
 

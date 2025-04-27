@@ -6,10 +6,11 @@ class Metropolis:
                  system,
                  N_samp,
                  d,
-                 val,
+                 val = lambda x: torch.tensor([1]),
                  N_sweep = 100,
                  log_per = 1000,
-                 filename="./trajs_and_corr/0.txt"):
+                 filename = "./trajs_and_corr/1.txt",
+                 open_mode = "w"):
         
         self.system = system
         self.n_nod = system.n_nod
@@ -24,6 +25,7 @@ class Metropolis:
         self.shift_dist = torch.distributions.Uniform(torch.zeros((self.n_nod,self.dim)), torch.ones(self.n_nod,self.dim))
         self.un = torch.distributions.Uniform(0, 1)
         self.val = val
+        self.open_mode = open_mode
         self.res=[]
         self.times=[]
         
@@ -49,7 +51,7 @@ class Metropolis:
     
     def log(self,x):
         v = self.val(x)
-        print(torch.mean(v,self.ar)
+        print(torch.mean(v),self.ar)
         self.res.append(v.cpu())
         self.times.append(time.time() - self.start)
     
@@ -58,19 +60,24 @@ class Metropolis:
         self.start = time.time()
         self.S = self.system.Full_S(x).to(x.device)
         self.ar = 0
-        self.mean_ar = 0
         self.res = []
         self.times = []
         
     
     def run(self,x):
         self.init_state(x)
-        f = open(self.filename,"w")
+        if len(self.filename)>0:
+            f = open(self.filename,self.open_mode)
+        
         for i in range(self.N_sweep):
-            if i % self.log_per == 0:
+            if i % self.log_per == 0 and i>0:
                 self.log(x)   
             self.sweep(x)
-        np.savetxt(f,x.numpy())    
-        f.close()        
+        
+        if len(self.filename)>0:    
+            X = x.clone()
+            X = torch.reshape(X,(X.shape[0],X.shape[1] * X.shape[2]))
+            np.savetxt(f,X.numpy())    
+            f.close()        
         return x    
     

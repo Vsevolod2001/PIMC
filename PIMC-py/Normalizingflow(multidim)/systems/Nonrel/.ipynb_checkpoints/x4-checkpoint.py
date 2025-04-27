@@ -13,7 +13,7 @@ class X4(nonrel_System):
     def V(self,x):
         return torch.sum(x ** 2 / 2,dim=-1) + self.g * (torch.sum(x ** 2,dim=-1)) ** 2
         
-    def U(self,x):
+    def F_V(self,x):
         return -x - 4 * self.g * (torch.sum(x ** 2,dim=-1)) * x
         
     

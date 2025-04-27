@@ -15,6 +15,6 @@ class ur_System(System):
         t=( 1 / a ) * torch.log(1 + (diff / a) ** 2)
         return t
     
-    def Y(self,diff):
+    def F_T(self,diff):
         v=diff / self.a
         return 2 / (self.a ** 2) * v / (1 + v ** 2)

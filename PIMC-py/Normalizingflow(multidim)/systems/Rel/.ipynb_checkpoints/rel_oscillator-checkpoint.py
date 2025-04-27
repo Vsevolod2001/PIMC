@@ -15,8 +15,8 @@ class Rel_Oscillator(rel_System):
     def V(self,x):
         return  self.s3 * x ** 2 / 2
 
-    def U(self,x):
-        return Oscillator.U(self,x)
+    def F_V(self,x):
+        return Oscillator.F_V(self,x)
     #def U(self,x):
         #return -x
 

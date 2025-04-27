@@ -26,7 +26,7 @@ class rel_System(System):
 
 
     
-    def Y(self,diff):
+    def F_T(self,diff):
         r = diff/self.a
         eta = self.a * self.s2 * ( 1 + (r ** 2) * self.s1 ** (-2) ) ** 0.5
         f = (kv(0,eta)+kv(2,eta))/(2*kv(1,eta))

@@ -139,7 +139,7 @@ class RGflows(nn.Module):
             x = z[:,self.masks[i],:]
             x, log_abs_det = ((self.nflist)[i]).g(x,params)
             sum_log_abs_det += log_abs_det
-            params = torch.cat((params,x.detach()),dim=-1)
+            params = torch.cat((params,x.detach()),dim=1)
             z[:,self.masks[i],:] = x
             full_mask += self.masks[i]          
             if len(full_mask) == self.out_dim:
@@ -155,13 +155,13 @@ class RGflows(nn.Module):
     def f(self, x: torch.Tensor,params=torch.tensor([])) -> torch.Tensor:
         
         with torch.no_grad():
-            res=x.clone()
+            res = x.clone()
             sum_log_abs_det = torch.zeros(res.size(0)).to(res.device)
-            params=torch.tensor([]).to(res.device)
+            params = torch.tensor([]).to(res.device)
             
             if self.O_latt.shape[0]>0:
                 for _ in range(self.out_dim):
-                    res[:,_,:] = torch.matmul(res[:,_,:],self.O_latt.to(z.device))
+                    res[:,_,:] = torch.matmul(res[:,_,:],self.O_latt.to(res.device))
             
             for _ in range(self.sys_dim):
                 res[:,:,_] = torch.matmul(res[:,:,_],self.O.to(res.device))
@@ -171,7 +171,7 @@ class RGflows(nn.Module):
                 tmp = z.clone()
                 z, log_abs_det = ((self.nflist)[i]).f(z,params)
                 sum_log_abs_det += log_abs_det
-                params = torch.cat((params,tmp.detach()),dim=-1)
+                params = torch.cat((params,tmp.detach()),dim=1)
                 res[:,self.masks[i],:] = z    
         
         return res, sum_log_abs_det

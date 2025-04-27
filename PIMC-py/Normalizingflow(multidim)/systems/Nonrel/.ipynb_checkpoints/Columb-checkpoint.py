@@ -13,7 +13,7 @@ class Columb(nonrel_System):
     def V(self,x):
         return  -self.alpha * (torch.sum(x ** 2,dim = -1) + self.R ** 2) ** (-0.5)
     
-    def U(self,x):
+    def F_V(self,x):
         return -self.alpha * x * (torch.sum(x ** 2,dim=-1) + self.R ** 2) ** (-1.5)
     
 
