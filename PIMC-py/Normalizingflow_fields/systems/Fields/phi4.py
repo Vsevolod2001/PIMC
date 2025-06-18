@@ -6,14 +6,9 @@ pi=torch.tensor(np.pi)
 
 class Phi4(Scalar_Field):
 
-    def __init__(self,n_nod,beta,space_dim,mass2,L,R,g):
-        super().__init__(n_nod,beta,space_dim,mass2,L,R)
+    def __init__(self,lattice,mass2,g):
+        super().__init__(lattice,mass2)
         self.normalizer = self.dim * 0.5 * torch.log( 2 * pi * self.a ) 
-        self.h = R/L
-        self.L = L
-        self.R = R
-        self.mass2 = mass2
-        self.space_dim = space_dim
         self.g = g
          
 

@@ -2,51 +2,69 @@ import torch
 from torch import nn
 from typing import Callable, List, Tuple
 
+from lattice import Lattice
 
 from flows.theta import ThetaNetwork
 from flows.Layers import AffineCouplingLayer
-from transforms import get_split_masks
-from transforms import get_pair_split_masks
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class NormalizingFlow(nn.Module):
     
-    def __init__(self, flows: List[nn.Module], O=torch.tensor([])):
+    def __init__(self, flows: List[nn.Module],lattice,ort):
         super().__init__()
         self.flows = flows
-        self.O = O
-        self.Ot = torch.t(O)
-        self.ort = self.O.shape[0]>0
+        self.ort = ort
+        self.lattice = lattice
+
+        self.n_flows = len(flows)
+        self.num_hidden = self.flows[0].theta.num_hidden
+        self.hidden_dim = self.flows[0].theta.hidden_dim
         
-    def configure_flows(n_flows,num_hidden,hidden_dim,p_drop,dim,param_dim=0,mask_config = get_pair_split_masks,sys_dim = 1):
-        flows = []
-        split_masks_d = mask_config(dim)
+          
     
-        for k in range(n_flows):
-            theta = ThetaNetwork.configure_theta(num_hidden = num_hidden, 
-                                                 hidden_dim = hidden_dim, 
-                                                 p_drop = p_drop,
-                                                 in_dim = (dim//2 + param_dim) * sys_dim ,
-                                                 out_dim = dim//2 * sys_dim)
-            flows.append(AffineCouplingLayer(theta, split = split_masks_d, swap = k % 2))
-   
-        flows = nn.ModuleList(flows)
-        return flows     
-    
-    def configure_flows_field(n_flows,num_hidden,hidden_dim,p_drop,dim,latt_size,space_dim,mask_config,param_dim=0):
+    def configure_flows_field(n_flows,num_hidden,hidden_dim,lattice,p_drop=0):
         flows = []
 
-        for k in range(n_flows):
-            for dir in range(space_dim):
-                split_masks = mask_config(latt_size,space_dim,dir)
+        for k in range(n_flows//2):
+            for dir in range(lattice.n_dims):
+                split_masks = lattice.get_pair_split_masks_field(dir)
                 theta = ThetaNetwork.configure_theta(num_hidden = num_hidden, 
                                                  hidden_dim = hidden_dim, 
                                                  p_drop = p_drop,
-                                                 in_dim = (dim//2 + param_dim) * sys_dim ,
-                                                 out_dim = dim//2 * sys_dim)
-                flows.append(AffineCouplingLayer(theta, split = split_masks_d, swap = k % 2))
+                                                 in_dim = lattice.total_nodes//2,
+                                                 out_dim = lattice.total_nodes//2)
+                flows.append(AffineCouplingLayer(theta, split = split_masks, swap = k % 2))
    
         flows = nn.ModuleList(flows)
         return flows     
+    
+    def config_and_init(n_flows,num_hidden,hidden_dim,lattice,ort):
+        flows = NormalizingFlow.configure_flows_field(n_flows,num_hidden,hidden_dim,lattice)
+        return NormalizingFlow(flows,lattice,ort)
+    
+    def save(self,filename):
+        state_dict = self.state_dict()
+        model_dict={"state_dict":state_dict,
+                    "n_flows":self.n_flows,
+                    "num_hidden":self.num_hidden,
+                    "hidden_dim":self.hidden_dim,
+                    "ort":self.ort,
+                    "n_nodes":self.lattice.n_nodes,
+                    "sizes":self.lattice.sizes}
+        torch.save(model_dict,filename)
+    
+    def load_model(filename):   
+        model_dict = torch.load(filename,map_location = device,weights_only=False)
+        lattice = Lattice(model_dict["n_nodes"],model_dict["sizes"])
+        model = NormalizingFlow.config_and_init(model_dict["n_flows"],
+                                  model_dict["num_hidden"], 
+                                  model_dict["hidden_dim"],
+                                  lattice,
+                                  model_dict["ort"])
+        model.load_state_dict(model_dict["state_dict"])
+        return model
+
 
     
 
@@ -58,7 +76,7 @@ class NormalizingFlow(nn.Module):
             sum_log_abs_det += log_abs_det
         
         if self.ort:
-            x = torch.matmul(x,self.Ot.to(x.device))
+            x = torch.matmul(x,self.lattice.ort_mat_t.to(x.device))
             
         return x, sum_log_abs_det
     
@@ -70,7 +88,7 @@ class NormalizingFlow(nn.Module):
         with torch.no_grad():
             res = x.clone()
             if self.ort:
-                res = torch.matmul(res,self.O.to(res.device))
+                res = torch.matmul(res,self.lattice.ort_mat.to(res.device))
         
             z, sum_log_abs_det = res, torch.zeros(res.size(0)).to(res.device)
         

@@ -22,7 +22,7 @@ class Metropolis:
         self.N_sweep = N_sweep
         self.log_per = log_per
         self.ar = 0
-        self.shift_dist = torch.distributions.Uniform(torch.zeros((self.n_nod,self.dim)), torch.ones(self.n_nod,self.dim))
+        self.shift_dist = torch.distributions.Uniform(torch.zeros((self.n_nod)), torch.ones(self.n_nod))
         self.un = torch.distributions.Uniform(0, 1)
         self.val = val
         self.open_mode = open_mode

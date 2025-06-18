@@ -14,6 +14,8 @@ class ThetaNetwork(nn.Module):
     ):
         super().__init__()
         self.input = nn.Linear(in_dim, hidden_dim)
+        self.num_hidden = num_hidden
+        self.hidden_dim = hidden_dim
         self.hidden = nn.ModuleList(
             [nn.Sequential(
                 nn.Linear(hidden_dim, hidden_dim),
@@ -39,13 +41,11 @@ class ThetaNetwork(nn.Module):
         return theta    
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        sh = x.shape
-        n_samp, n_nod, n_dim = sh[0], sh[1], sh[2]
-        x = torch.reshape(x,(n_samp,n_nod*n_dim))
         x = F.leaky_relu(self.input(x),negative_slope=0.01)
+        
         for h in self.hidden:
             x = F.leaky_relu(h(x),negative_slope=0.01)
         
-        batch_params = self.dims(x).reshape(n_samp, self.out_dim//n_dim, n_dim, self.num_params)
+        batch_params = self.dims(x).reshape(x.size(0), self.out_dim, self.num_params)
         params = batch_params.chunk(self.num_params, dim=-1)
         return [p.squeeze(-1) for p in params]

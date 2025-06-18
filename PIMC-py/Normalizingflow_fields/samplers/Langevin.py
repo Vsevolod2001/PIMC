@@ -17,7 +17,7 @@ class Langevin:
         self.n_nod = self.system.n_nod
         self.dim = self.system.dim
         self.n_samp = N_samp
-        self.shift_dist = torch.distributions.Normal(torch.zeros(self.n_nod,self.dim), torch.ones(self.n_nod,self.dim))
+        self.shift_dist = torch.distributions.Normal(torch.zeros(self.n_nod), torch.ones(self.n_nod))
         self.open_mode = open_mode
         self.val = val
         self.res = []
@@ -28,7 +28,7 @@ class Langevin:
         dw = self.shift_dist.sample((self.n_samp,)).to(x.device)
         x += 0.5*self.eps*self.system.F(x) + self.eps ** 0.5 * dw
         
-    def log(self,z):
+    def log(self,x):
         if self.val!="none":
             print(self.val(x))
             self.res.append(torch.mean(self.val(x)).cpu())

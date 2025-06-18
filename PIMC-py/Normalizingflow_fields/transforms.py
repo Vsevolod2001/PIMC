@@ -3,51 +3,39 @@ import torch
 
 
 def get_O(N):
-    O=np.zeros((N,N))
+    
+    O = np.zeros((N,N))
     for k in range(N):
-        O[k][0]=1
+        O[k][0] = 1
     
-    if N%2==0:
+    if N%2 == 0:
         for k in range(N):
-            O[k][1]=(-1)**k
+            O[k][1] = (-1)**k
     
-    ev=int(N%2==0)
+    ev = int(N%2==0)
     Smax=(N-1-ev)//2    
     
     for s in range(1,Smax+1):
         for k in range(N):
-            O[k][2*s-1+ev]=(2**0.5)*np.cos(2*np.pi*s*k/N)
-            O[k][2*s+ev]=(2**0.5)*np.sin(2*np.pi*s*k/N)
+            O[k][2*s-1+ev] = (2**0.5)*np.cos(2*np.pi*s*k/N)
+            O[k][2*s+ev] = (2**0.5)*np.sin(2*np.pi*s*k/N)
 
-    O=O / (N ** 0.5)
+    O = O / (N ** 0.5)
     return O
 
 def t_get_O(N):
     return torch.tensor(get_O(N)).float()
 
-def get_split_masks(dim):
-    mask1=list(range(0,dim,2))
-    mask2=list(range(1,dim,2))
-    split_masks=[mask1,mask2]
-    return split_masks 
-
-def get_pair_split_masks(dim):
-    mask1=list(range(0,dim,4))
-    mask2=list(range(2,dim,4))
-    mask1=(mask1+list(map(lambda x:x+1,mask1)))
-    mask2=(mask2+list(map(lambda x:x+1,mask2)))
-    mask1.sort()
-    mask2.sort()
-    split_masks=[mask1,mask2]
-    return split_masks
 
 
 def get_points(start,stop,step):
+    
     if step == 0:
         print("step = 0 error")
         return 1
-    x=start
-    Y=[]
+    
+    x = start
+    Y = []
     while x < stop:
         Y.append(x)
         Y.append(x+1)

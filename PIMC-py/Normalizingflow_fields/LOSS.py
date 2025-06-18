@@ -6,17 +6,16 @@ pi=torch.tensor(np.pi)
 
 class KL_with_S(nn.Module):
     
-    def __init__(self,S,n_nod,dim):
+    def __init__(self,S,lattice):
         super().__init__()
         self.S = S
-        self.n_nod = n_nod
+        self.lattice = lattice
         self.val_S = 0
-        self.dim = dim
     
     def forward(self,x,log_abs_det):
         self.val_S = self.S(x)
         loss = torch.mean(self.val_S-log_abs_det)
-        loss -= self.dim * (self.n_nod / 2) * (1 + torch.log( 2 * pi ))
+        loss -= (self.lattice.total_nodes / 2) * (1 + torch.log( 2 * pi ))
         return loss
         
     def ESS(self,latent_log_prob,log_abs_det):
