@@ -10,7 +10,7 @@ class Scalar_Field(System):
         super().__init__(lattice)
         self.normalizer = self.lattice.n_dims * 0.5 * torch.log( 2 * pi * self.lattice.steps[0]) 
         self.mass2 = mass2
-        self.J = torch.zeros((self.L,self.L))
+        self.J = torch.zeros((self.lattice.total_nodes))
         
 
 
@@ -31,21 +31,21 @@ class Scalar_Field(System):
 
     def V_J(self,phi):
         
-        return torch.matmul(phi,self.J)
+        return torch.einsum("bj,j->b",phi,self.J)
 
     def V_int(self,phi):
         return 0
 
     
     
-    def set_J_global(self,j):
-        self.J = j * torch.ones(self.L)
+    #def set_J_global(self,j):
+    #    self.J = j * torch.ones(self.L)
 
-    def set_J_local(self,j,k_nod):
-        self.J[k_nod] = j
+    #def set_J_local(self,j,k_nod):
+    #    self.J[k_nod] = j
 
-    def set_J(self,J):
-        self.J = J.clone().detach()
+    #def set_J(self,J):
+    #    self.J = J.clone().detach()
     
     def S(self,x):
         s = (self.Kin(phi)+self.V(phi)) * self.lattice.vol_element
@@ -58,7 +58,7 @@ class Scalar_Field(System):
     
     def F_kin(self,phi):
         
-        return 0
+        return torch.einsum("ij,bj->bi",self.lattice.kin_mat,phi)
 
     def F_mass(self,phi):
         return -self.mass2 * phi
@@ -71,9 +71,9 @@ class Scalar_Field(System):
     
 
     def F_V(self,phi):
-        return self.F_grad(phi) + self.F_mass(phi) + self.F_int(phi) + self.F_J(phi)
+        return  self.F_mass(phi) + self.F_int(phi) + self.F_J(phi)
 
     def F(self,phi):
-        return (self.h ** self.space_dim) * self.a * (self.F_T(phi)+self.F_V(phi))
+        return self.lattice.vol_element(self.F_kin(phi)+self.F_V(phi))
 
     
