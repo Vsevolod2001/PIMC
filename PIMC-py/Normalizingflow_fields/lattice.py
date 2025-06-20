@@ -15,14 +15,40 @@ class Lattice:
         self.total_nodes = np.prod(self.n_nodes)
         self.vol_element = np.prod(self.steps)
         
-        self.device = "cuda"
+        self.device = "cpu"
         
         self.ort_mat = self.get_big_ort_mat().to(self.device)
         self.ort_mat_t = torch.t(self.ort_mat)
 
         self.kin_mat = self.get_kin_mat().to(self.device)   
 
+    def index_to_multi(self,index):
+        k = index
+        multi = np.zeros((self.n_dims,),dtype=np.int16)
+        for i in range(self.n_dims-1):
+            multi[i] = k % self.n_nodes[i]
+            k = k//self.n_nodes[i]
+        multi[self.n_dims-1] = k
+        return multi
     
+    def multi_to_index(self,multi):
+        s = multi[self.n_dims-1]
+        for dir in range(self.n_dims-1,0,-1):
+            s = self.n_nodes[dir-1] * s + multi[dir-1]
+        return s
+
+    def get_time_averaging_mat(self):
+        one_node_av = torch.zeros(self.total_nodes)
+        one_node_av[:self.n_nodes[0]] = 1
+        
+        mat = one_node_av.clone() 
+
+        for _ in range(self.total_nodes//self.n_nodes[0]-1):
+            one_node_av = torch.roll(one_node_av,self.n_nodes[0])
+            mat = torch.column_stack((mat,one_node_av))
+        return mat.t()/self.n_nodes[0]    
+
+
     
     
     def get_pair_split_masks_field(self,dir):
