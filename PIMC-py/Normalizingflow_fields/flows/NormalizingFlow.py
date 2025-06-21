@@ -33,8 +33,8 @@ class NormalizingFlow(nn.Module):
                                                  hidden_dim = hidden_dim, 
                                                  p_drop = p_drop,
                                                  in_dim = lattice.total_nodes//2,
-                                                 out_dim = lattice.total_nodes//2)
-                flows.append(AffineCouplingLayer(theta, split = split_masks, swap = k % 2))
+                                                 out_dim = lattice.total_nodes//2).to(device)
+                flows.append(AffineCouplingLayer(theta, split = split_masks, swap = k % 2).to(device))
    
         flows = nn.ModuleList(flows)
         return flows     
@@ -72,7 +72,7 @@ class NormalizingFlow(nn.Module):
         
         x, sum_log_abs_det = z, torch.zeros(z.size(0)).to(z.device)
         for flow in reversed(self.flows):
-            x, log_abs_det = flow.g(x,params)
+            x, log_abs_det = flow.g(x,params.to(x.device))
             sum_log_abs_det += log_abs_det
         
         if self.ort:

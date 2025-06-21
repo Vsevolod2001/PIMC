@@ -10,12 +10,11 @@ class Scalar_Field(System):
         super().__init__(lattice)
         self.normalizer = self.lattice.n_dims * 0.5 * torch.log( 2 * pi * self.lattice.steps[0]) 
         self.mass2 = mass2
-        self.J = torch.zeros((self.lattice.total_nodes))
+        self.J = torch.zeros((self.lattice.total_nodes)).to(lattice.device)
         
 
 
     def Kin(self,phi):
-        
         return 0.5 * torch.einsum("bi,ij,bj->b",phi,self.lattice.kin_mat,phi)
 
 
@@ -50,7 +49,7 @@ class Scalar_Field(System):
     def set_J(self,J):
         self.J = J.clone().detach()
     
-    def S(self,x):
+    def S(self,phi):
         s = (self.Kin(phi)+self.V(phi)) * self.lattice.vol_element
         return s 
 
@@ -60,7 +59,6 @@ class Scalar_Field(System):
     
     
     def F_kin(self,phi):
-        
         return -torch.einsum("ij,bj->bi",self.lattice.kin_mat,phi)
 
     def F_mass(self,phi):
@@ -77,7 +75,7 @@ class Scalar_Field(System):
         return  self.F_mass(phi) + self.F_int(phi) + self.F_J(phi)
 
     def F(self,phi):
-        return self.lattice.vol_element(self.F_kin(phi)+self.F_V(phi))
+        return self.lattice.vol_element * (self.F_kin(phi)+self.F_V(phi))
     
     
     def get_free_prop_p(self):

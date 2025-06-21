@@ -13,9 +13,8 @@ class Metropolis:
                  open_mode = "w"):
         
         self.system = system
-        self.n_nod = system.n_nod
-        self.dim = self.system.dim
         self.n_samp = N_samp
+        self.n_nod = self.system.lattice.total_nodes
         self.S = 0
         self.filename = filename
         self.d = d
@@ -30,10 +29,11 @@ class Metropolis:
         self.times=[]
         
     def sweep(self,x):
+        
         shift = self.shift_dist.sample((self.n_samp,)).to(x.device)
-        y = x + self.d*(2*shift-1)
+        y = x + self.d * (2*shift-1)
     
-        S_new = self.system.Full_S(y).to(x.device) 
+        S_new = self.system.S(y).to(x.device) 
     
         dS = S_new - self.S
         prob = torch.exp(-dS)
@@ -58,7 +58,7 @@ class Metropolis:
     
     def init_state(self,x):
         self.start = time.time()
-        self.S = self.system.Full_S(x).to(x.device)
+        self.S = self.system.S(x).to(x.device)
         self.ar = 0
         self.res = []
         self.times = []
@@ -75,9 +75,7 @@ class Metropolis:
             self.sweep(x)
         
         if len(self.filename)>0:    
-            X = x.clone()
-            X = torch.reshape(X,(X.shape[0],X.shape[1] * X.shape[2]))
-            np.savetxt(f,X.numpy())    
+            np.savetxt(f,x.cpu().numpy())    
             f.close()        
         return x    
     

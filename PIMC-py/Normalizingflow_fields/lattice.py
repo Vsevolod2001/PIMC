@@ -7,7 +7,11 @@ from Data import Distribution_set
 class Lattice:
     
     
-    def __init__(self,n_nodes,sizes):
+    def __init__(self,n_nodes,sizes,device="cpu"):
+
+        self.device = device
+
+
         self.n_dims = len(n_nodes)
         self.n_nodes = np.array(n_nodes)
         self.sizes = np.array(sizes)
@@ -15,7 +19,6 @@ class Lattice:
         self.total_nodes = np.prod(self.n_nodes)
         self.vol_element = np.prod(self.steps)
         
-        self.device = "cpu"
         
         self.ort_mat = self.get_big_ort_mat().to(self.device)
         self.ort_mat_t = torch.t(self.ort_mat)
@@ -46,7 +49,7 @@ class Lattice:
         for _ in range(self.total_nodes//self.n_nodes[0]-1):
             one_node_av = torch.roll(one_node_av,self.n_nodes[0])
             mat = torch.column_stack((mat,one_node_av))
-        return mat.t()/self.n_nodes[0]    
+        return (mat.t()/self.n_nodes[0]).to(self.device)    
 
 
     
