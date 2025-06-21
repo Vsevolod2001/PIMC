@@ -26,7 +26,7 @@ class Scalar_Field(System):
 
     def V_mass(self,phi):
         
-        return torch.sum(self.mass2 * phi ** 2 / 2,-1)
+        return 0.5 * torch.sum(self.mass2 * phi ** 2 ,-1)
 
     def V_J(self,phi):
         
