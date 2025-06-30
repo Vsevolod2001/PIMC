@@ -17,7 +17,6 @@ class AffineCouplingLayer(nn.Module):
         mask1 = self.split[self.swap]
         mask2 = self.split[(self.swap+1)%2]
         z1, z2 = z[:,mask1], z[:,mask2]
-        #z1 = torch.cat((z1,params),dim = -1)
         t, s = self.theta(z1)
         x2 = z2 * torch.exp(s) + t
         log_det = torch.sum(s,dim = -1)
@@ -28,9 +27,9 @@ class AffineCouplingLayer(nn.Module):
         mask1 = self.split[self.swap]
         mask2 = self.split[(self.swap+1)%2]
         x1, x2 = x[:,mask1], x[:,mask2]
-        x1 = torch.cat((x1,params),dim = -1)
+        #x1 = torch.cat((x1,params),dim = -1)
         t, s = self.theta(x1)
         z2 = torch.exp(-s)*(x2-t) 
-        log_det = -torch.sum(-s,dim=-1) 
+        log_det = torch.sum(-s,dim=-1) 
         x[:,mask2] = z2
         return x, log_det    

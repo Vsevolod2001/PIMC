@@ -11,6 +11,9 @@ class Scalar_Field(System):
         self.normalizer = self.lattice.n_dims * 0.5 * torch.log( 2 * pi * self.lattice.steps[0]) 
         self.mass2 = mass2
         self.J = torch.zeros((self.lattice.total_nodes)).to(lattice.device)
+
+        
+        self.log_Z = self.get_log_Z()
         
 
 
@@ -50,7 +53,7 @@ class Scalar_Field(System):
         self.J = J.clone().detach()
     
     def S(self,phi):
-        s = (self.Kin(phi)+self.V(phi)) * self.lattice.vol_element
+        s = (self.Kin(phi)+self.V(phi)) * self.lattice.vol_element + self.log_Z
         return s 
 
     
@@ -89,5 +92,8 @@ class Scalar_Field(System):
         prop = torch.einsum("ki,ij,mj->km",self.lattice.ort_mat,prop,self.lattice.ort_mat)
         return prop
 
-
+    def get_log_Z(self):
+        vK = self.lattice.vol_element * (self.lattice.get_diag_kin_mat() + self.mass2)
+        vK = vK/(2*pi)
+        return -0.5 * torch.sum(torch.log(vK))
     
