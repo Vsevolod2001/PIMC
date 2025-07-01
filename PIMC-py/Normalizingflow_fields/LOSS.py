@@ -1,7 +1,7 @@
 import torch 
 from torch import nn
 import numpy as np
-pi=torch.tensor(np.pi)
+pi = torch.tensor(np.pi)
 
 
 class KL_with_S(nn.Module):
@@ -11,11 +11,12 @@ class KL_with_S(nn.Module):
         self.S = S
         self.lattice = lattice
         self.val_S = 0
+        self.normalizer = (self.lattice.total_nodes / 2) * (1 + torch.log( 2 * pi ))
     
     def forward(self,x,log_abs_det):
         self.val_S = self.S(x)
         loss = torch.mean(self.val_S-log_abs_det)
-        loss -= (self.lattice.total_nodes / 2) * (1 + torch.log( 2 * pi ))
+        loss -= self.normalizer
         return loss
         
     def ESS(self,latent_log_prob,log_abs_det):

@@ -26,6 +26,7 @@ class NN_Metropolis:
         self.val = val
         self.usual_sampler = usual_sampler
         self.stat_file = stat_filename
+        self.count = 0
         self.device = self.system.lattice.device
         self.res=[]
         self.times=[]
@@ -64,6 +65,7 @@ class NN_Metropolis:
         self.S = self.system.S(x).to(x.device)
         self.ar = 0
         self.n_current_trajs = 0
+        self.count = 0
         self.res = []
         self.times = []
         
@@ -73,6 +75,7 @@ class NN_Metropolis:
         f = open(self.filename,"w") 
         stat_f = open(self.stat_file,"w")   
         while self.n_current_trajs < self.n_samp:
+            self.count += 1
             if self.n_current_trajs % self.log_per == 0:
                 self.log(x)
             self.usual_sampler.run(x)    
@@ -81,7 +84,10 @@ class NN_Metropolis:
 
             if self.is_accepted:
                 self.n_current_trajs += 1
-                np.savetxt(f,x.detach().cpu().numpy())    
-        f.close()        
+                np.savetxt(f,x.detach().cpu().numpy())
+
+        print("mean acceptance rate:", self.n_samp/self.count,file=stat_f)
+        f.close()
+        stat_f.close()        
         return x    
     

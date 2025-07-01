@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from Data import Distribution_set
+pi = torch.tensor(np.pi)
 
 class Lattice:
     
@@ -15,7 +16,7 @@ class Lattice:
         self.n_dims = len(n_nodes)
         self.n_nodes = np.array(n_nodes)
         self.sizes = np.array(sizes)
-        self.steps =  self.n_nodes/self.sizes
+        self.steps =  self.sizes/self.n_nodes
         self.total_nodes = np.prod(self.n_nodes)
         self.vol_element = np.prod(self.steps)
         
@@ -163,6 +164,9 @@ class Lattice:
     def normal_sampler(self):
         normal_dist = torch.distributions.Normal(loc = torch.zeros(self.total_nodes), scale = torch.ones(self.total_nodes))
         return normal_dist
+    
+    def log_prob(self,x):
+        return -0.5 * x**2 - 0.5 * torch.log(2*pi)
 
     def get_train_loader(self,epoch_size,batch_size):
         DS = Distribution_set(self.normal_sampler(),epoch_size,self.device)

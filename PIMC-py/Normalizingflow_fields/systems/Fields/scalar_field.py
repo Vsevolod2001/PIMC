@@ -8,7 +8,6 @@ class Scalar_Field(System):
 
     def __init__(self,lattice,mass2):
         super().__init__(lattice)
-        self.normalizer = self.lattice.n_dims * 0.5 * torch.log( 2 * pi * self.lattice.steps[0]) 
         self.mass2 = mass2
         self.J = torch.zeros((self.lattice.total_nodes)).to(lattice.device)
 
@@ -41,16 +40,19 @@ class Scalar_Field(System):
     
     
     def set_J_global(self,j):
-        self.J = j * torch.ones(self.lattice.total_nodes)
+        self.J = j * torch.ones(self.lattice.total_nodes).to(self.lattice.device)
+        self.log_Z += self.get_log_Z_J()
 
     def set_J_local(self,j,multi_index):
         for i in range(self.lattice.n_nodes[0]):
             multi_index[0] = i
             index = self.lattice.multi_to_index(multi_index)
             self.J[index] = j
+        self.log_Z += self.get_log_Z_J()    
 
     def set_J(self,J):
         self.J = J.clone().detach()
+        self.log_Z += self.get_log_Z_J()
     
     def S(self,phi):
         s = (self.Kin(phi)+self.V(phi)) * self.lattice.vol_element + self.log_Z
@@ -93,7 +95,18 @@ class Scalar_Field(System):
         return prop
 
     def get_log_Z(self):
-        vK = self.lattice.vol_element * (self.lattice.get_diag_kin_mat() + self.mass2)
-        vK = vK/(2*pi)
-        return -0.5 * torch.sum(torch.log(vK))
+        if self.mass2>0:
+            vK = self.lattice.vol_element * (self.lattice.get_diag_kin_mat() + self.mass2)
+            vK = vK/(2*pi)
+            return -0.5 * torch.sum(torch.log(vK))
+        else:
+            return 0
     
+    def get_log_Z_J(self):
+        if self.mass2>0:
+            J_p = torch.matmul(self.lattice.ort_mat_t,self.J)
+            prop_p = self.get_free_prop_p()
+            return self.lattice.vol_element * 0.5 * torch.dot(prop_p * J_p,J_p)
+        else:
+            return 0
+
