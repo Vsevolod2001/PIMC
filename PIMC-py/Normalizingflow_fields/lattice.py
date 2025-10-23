@@ -57,8 +57,8 @@ class Lattice:
     
     def get_pair_split_masks_field(self,dir):
         bigmask = list(range(self.total_nodes))
-        mask1 = list(filter(lambda x: x% (4 * self.n_nodes[dir] ** dir) < 2 * self.n_nodes[dir] ** dir,bigmask))       
-        mask2 = list(filter(lambda x: x%4>=2,bigmask))
+        mask1 = list(filter(lambda x: self.index_to_multi(x)[dir] % 4 < 2 ,bigmask))       
+        mask2 = list(filter(lambda x: self.index_to_multi(x)[dir] % 4 >= 2,bigmask))
         return [mask1, mask2]
     
 

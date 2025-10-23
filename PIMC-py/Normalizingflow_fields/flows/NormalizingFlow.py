@@ -3,19 +3,18 @@ from torch import nn
 from typing import Callable, List, Tuple
 
 from lattice import Lattice
+from flows.Flow import Flow
 
 from flows.theta import ThetaNetwork
-from flows.Layers import AffineCouplingLayer
+from transforms.Layers import AffineCouplingLayer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class NormalizingFlow(nn.Module):
+class NormalizingFlow(Flow):
     
     def __init__(self, flows: List[nn.Module],lattice,ort):
-        super().__init__()
+        super().__init__(lattice,ort)
         self.flows = flows
-        self.ort = ort
-        self.lattice = lattice
 
         self.n_blocks = len(flows)//self.lattice.n_dims
         self.num_hidden = self.flows[0].theta.num_hidden
@@ -71,6 +70,7 @@ class NormalizingFlow(nn.Module):
     def g(self, z: torch.Tensor,params=torch.tensor([])) -> torch.Tensor:
         
         x, sum_log_abs_det = z, torch.zeros(z.size(0)).to(z.device)
+        
         for flow in reversed(self.flows):
             x, log_abs_det = flow.g(x,params.to(x.device))
             sum_log_abs_det += log_abs_det
@@ -80,13 +80,13 @@ class NormalizingFlow(nn.Module):
             
         return x, sum_log_abs_det
     
-        
-    def __len__(self) -> int:
-        return len(self.flows)
     
     def f(self, x: torch.Tensor,params=torch.tensor([])) -> Tuple[torch.Tensor, torch.Tensor]:
+        
         with torch.no_grad():
+            
             res = x.clone()
+            
             if self.ort:
                 res = torch.matmul(res,self.lattice.ort_mat.to(res.device))
         
